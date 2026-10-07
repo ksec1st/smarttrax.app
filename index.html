@@ -60,9 +60,24 @@
 <option value="往復">往復</option>
 <option value="片道">片道</option>
 </select></div>
-<div class="form-group"><label for="transportCost">交通費<span class="required">必須</span></label>
-<div class="money-input"><span>¥</span>
-<input　type="number"　id="transportCost"　min="0"　step="1"　placeholder="0"　required></div></div>
+<div class="form-group">
+            <label for="transportCost">
+              交通費 <span class="required">必須</span>
+            </label>
+
+            <div class="money-input">
+              <span>¥</span>
+              <input
+                type="number"
+                id="transportCost"
+                name="transportCost"
+                min="0"
+                step="1"
+                placeholder="0"
+                required
+              >
+            </div>
+          </div>
 </div>
 <!-- TOTAL -->
 <div class="total-box"><div><span>申請合計金額</span><small>交通費</small></div><strong id="totalAmount">¥0</strong>
