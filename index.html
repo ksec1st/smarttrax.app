@@ -1,0 +1,396 @@
+```html
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>交通費申請フォーム | Esports Club</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <div class="background"></div>
+
+  <main class="container">
+
+    <header class="header">
+      <div class="logo">
+        <span class="logo-mark">ES</span>
+        <div>
+          <p class="logo-sub">ESPORTS CLUB</p>
+          <h1>交通費申請</h1>
+        </div>
+      </div>
+
+      <p class="header-description">
+        遠征・大会等で発生した交通費を申請してください。
+      </p>
+    </header>
+
+
+    <form id="expenseForm">
+
+      <!-- 申請者情報 -->
+      <section class="form-section">
+        <div class="section-title">
+          <span>01</span>
+          <div>
+            <p>APPLICANT</p>
+            <h2>申請者情報</h2>
+          </div>
+        </div>
+
+        <div class="form-grid">
+
+          <div class="form-group full">
+            <label for="name">
+              氏名 <span class="required">必須</span>
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              placeholder="例：山田 太郎"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="grade">
+              学年 <span class="required">必須</span>
+            </label>
+
+            <select id="grade" name="grade" required>
+              <option value="">選択してください</option>
+              <option value="1">1年</option>
+              <option value="2">2年</option>
+              <option value="3">3年</option>
+              <option value="4">4年</option>
+              <option value="その他">その他</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="className">
+              クラス <span class="required">必須</span>
+            </label>
+
+            <input
+              type="text"
+              id="className"
+              name="className"
+              placeholder="例：A組"
+              required
+            >
+          </div>
+
+        </div>
+      </section>
+
+
+      <!-- 遠征情報 -->
+      <section class="form-section">
+
+        <div class="section-title">
+          <span>02</span>
+          <div>
+            <p>TRIP INFORMATION</p>
+            <h2>遠征情報</h2>
+          </div>
+        </div>
+
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label for="tripDate">
+              遠征日 <span class="required">必須</span>
+            </label>
+
+            <input
+              type="date"
+              id="tripDate"
+              name="tripDate"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="destination">
+              遠征先 <span class="required">必須</span>
+            </label>
+
+            <input
+              type="text"
+              id="destination"
+              name="destination"
+              placeholder="例：大阪府"
+              required
+            >
+          </div>
+
+          <div class="form-group full">
+            <label for="eventName">
+              大会・イベント名
+            </label>
+
+            <input
+              type="text"
+              id="eventName"
+              name="eventName"
+              placeholder="例：○○ Esports CUP"
+            >
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- 交通情報 -->
+      <section class="form-section">
+
+        <div class="section-title">
+          <span>03</span>
+          <div>
+            <p>TRANSPORTATION</p>
+            <h2>交通情報</h2>
+          </div>
+        </div>
+
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label for="departure">
+              出発地 <span class="required">必須</span>
+            </label>
+
+            <input
+              type="text"
+              id="departure"
+              name="departure"
+              placeholder="例：京都駅"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="arrival">
+              到着地 <span class="required">必須</span>
+            </label>
+
+            <input
+              type="text"
+              id="arrival"
+              name="arrival"
+              placeholder="例：大阪駅"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="transport">
+              交通手段 <span class="required">必須</span>
+            </label>
+
+            <select id="transport" name="transport" required>
+              <option value="">選択してください</option>
+              <option value="電車">電車</option>
+              <option value="バス">バス</option>
+              <option value="新幹線">新幹線</option>
+              <option value="飛行機">飛行機</option>
+              <option value="タクシー">タクシー</option>
+              <option value="その他">その他</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="roundTrip">
+              利用区分 <span class="required">必須</span>
+            </label>
+
+            <select id="roundTrip" name="roundTrip" required>
+              <option value="">選択してください</option>
+              <option value="往復">往復</option>
+              <option value="片道">片道</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="transportCost">
+              交通費 <span class="required">必須</span>
+            </label>
+
+            <div class="money-input">
+              <span>¥</span>
+              <input
+                type="number"
+                id="transportCost"
+                name="transportCost"
+                min="0"
+                step="1"
+                placeholder="0"
+                required
+              >
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="otherCost">
+              その他交通費
+            </label>
+
+            <div class="money-input">
+              <span>¥</span>
+              <input
+                type="number"
+                id="otherCost"
+                name="otherCost"
+                min="0"
+                step="1"
+                placeholder="0"
+                value="0"
+              >
+            </div>
+          </div>
+
+        </div>
+
+
+        <div class="total-box">
+          <div>
+            <span>申請合計金額</span>
+            <small>交通費 + その他交通費</small>
+          </div>
+
+          <strong id="totalAmount">¥0</strong>
+        </div>
+
+      </section>
+
+
+      <!-- 証明写真 -->
+      <section class="form-section">
+
+        <div class="section-title">
+          <span>04</span>
+          <div>
+            <p>RECEIPT</p>
+            <h2>領収書・証明写真</h2>
+          </div>
+        </div>
+
+        <div class="upload-box">
+
+          <input
+            type="file"
+            id="receipt"
+            name="receipt"
+            accept="image/jpeg,image/png,image/webp"
+          >
+
+          <label for="receipt" class="upload-label">
+            <span class="upload-icon">＋</span>
+            <strong>写真を選択</strong>
+            <small>JPG / PNG / WEBP</small>
+          </label>
+
+          <div id="preview" class="preview"></div>
+
+        </div>
+
+        <p class="notice">
+          ※ 領収書・乗車券・交通系ICの利用履歴など、
+          交通費を確認できる写真を添付してください。
+        </p>
+
+      </section>
+
+
+      <!-- 備考 -->
+      <section class="form-section">
+
+        <div class="section-title">
+          <span>05</span>
+          <div>
+            <p>NOTE</p>
+            <h2>備考</h2>
+          </div>
+        </div>
+
+        <div class="form-group">
+
+          <textarea
+            id="note"
+            name="note"
+            rows="5"
+            placeholder="必要事項があれば入力してください。"
+          ></textarea>
+
+        </div>
+
+      </section>
+
+
+      <!-- 申請ボタン -->
+      <section class="submit-section">
+
+        <div class="confirm-text">
+          <label>
+            <input type="checkbox" id="confirm" required>
+            <span>
+              入力内容を確認しました。
+            </span>
+          </label>
+        </div>
+
+        <button type="submit" id="submitButton">
+          <span>交通費を申請する</span>
+          <span class="arrow">→</span>
+        </button>
+
+        <p class="submit-note">
+          送信後、運営による確認を行います。
+        </p>
+
+      </section>
+
+    </form>
+
+
+    <!-- 完了画面 -->
+    <section id="successScreen" class="success-screen hidden">
+
+      <div class="success-icon">✓</div>
+
+      <p>APPLICATION COMPLETE</p>
+
+      <h2>申請完了</h2>
+
+      <p class="success-message">
+        交通費申請を受け付けました。
+      </p>
+
+      <div class="application-number">
+        <span>申請番号</span>
+        <strong id="applicationNumber">---</strong>
+      </div>
+
+      <button id="newApplication" class="secondary-button">
+        新しい申請をする
+      </button>
+
+    </section>
+
+
+    <footer>
+      <p>ESPORTS CLUB TRANSPORTATION EXPENSE SYSTEM</p>
+    </footer>
+
+  </main>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
+```
