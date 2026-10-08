@@ -36,17 +36,13 @@
 </div></div>
 <!-- 申請フォーム -->
 <section class="card">
-<div class="section-title"><div><p class="small-label">APPLICATION</p><h2>交通費を申請する</h2>
-</div></div>
+<div class="section-title"><div><p class="small-label">APPLICATION</p><h2>交通費を申請する</h2></div></div>
 <form id="expenseForm">
 <div class="form-grid">
 <!-- 氏名 -->
-<div class="form-group">
-<label>氏名<span class="required">必須</span></label>
-<input type="text" id="name" required></div>
+<div class="form-group"><label>氏名<span class="required">必須</span></label><input type="text" id="name" required></div>
 <!-- 学年 -->
-<div class="form-group">
-<label>学年<span class="required">必須</span></label>
+<div class="form-group"><label>学年<span class="required">必須</span></label>
 <select id="grade"required>
 <option value="">学年を選択してください</option>
 <option value="自己創造1年">自己創造1年</option>
@@ -67,375 +63,54 @@
 <option value="4組">4組</option>
 <option value="5組">5組</option>
 </select></div>
-
-
-
-        <!-- 遠征日 -->
-
-        <div class="form-group">
-
-          <label>
-            遠征日
-            <span class="required">必須</span>
-          </label>
-
-          <input
-            type="date"
-            id="tripDate"
-            required
-          >
-
-        </div>
-
-
-
-        <!-- 遠征先 -->
-
-        <div class="form-group">
-
-          <label>
-            遠征先
-            <span class="required">必須</span>
-          </label>
-
-          <input
-            type="text"
-            id="destination"
-            placeholder="例：大阪"
-            required
-          >
-
-        </div>
-
-
-
-        <!-- 大会 -->
-
-        <div class="form-group">
-
-          <label>
-            大会・イベント名
-            <span class="required">必須</span>
-          </label>
-
-          <input
-            type="text"
-            id="eventName"
-            required
-          >
-
-        </div>
-
-
-
-        <!-- 出発地 -->
-
-        <div class="form-group">
-
-          <label>
-            出発地
-            <span class="required">必須</span>
-          </label>
-
-          <input
-            type="text"
-            id="departure"
-            required
-          >
-
-        </div>
-
-
-
-        <!-- 到着地 -->
-
-        <div class="form-group">
-
-          <label>
-            到着地
-            <span class="required">必須</span>
-          </label>
-
-          <input
-            type="text"
-            id="arrival"
-            required
-          >
-
-        </div>
-
-
-
-        <!-- 交通費 -->
-
-        <div class="form-group">
-
-          <label>
-            交通費
-            <span class="required">必須</span>
-          </label>
-
-          <div class="money-input">
-
-            <input
-              type="number"
-              id="transportCost"
-              min="0"
-              step="1"
-              placeholder="0"
-              required
-            >
-
-            <span>円</span>
-
-          </div>
-
-        </div>
-
-
-      </div>
-
-
-      <!-- 合計 -->
-
-      <div class="total-box">
-
-        <span>
-          合計金額
-        </span>
-
-        <strong>
-          ¥<span id="totalAmount">
-            0
-          </span>
-        </strong>
-
-      </div>
-
-
-
-      <!-- 備考 -->
-
-      <div class="form-group">
-
-        <label>
-          備考
-        </label>
-
-        <textarea
-          id="note"
-          rows="4"
-          placeholder="必要事項があれば入力してください"
-        ></textarea>
-
-      </div>
-
-
-
-      <!-- 確認 -->
-
-      <label class="confirm-box">
-
-        <input
-          type="checkbox"
-          id="confirm"
-          required
-        >
-
-        <span>
-          入力内容を確認しました。
-        </span>
-
-      </label>
-
-
-
-      <button
-        type="submit"
-        id="submitButton"
-        class="primary-button"
-      >
-        交通費を申請する
-      </button>
-
-
-    </form>
-
-  </section>
-
-
-
-  <!-- 自分の申請 -->
-
-  <section class="card">
-
-    <div class="section-title">
-
-      <div>
-
-        <p class="small-label">
-          MY APPLICATIONS
-        </p>
-
-        <h2>
-          申請状況
-        </h2>
-
-      </div>
-
-      <button
-        id="refreshStudentButton"
-        class="secondary-button"
-      >
-        更新
-      </button>
-
-    </div>
-
-
-    <div id="studentApplications">
-
-      <div class="loading">
-        読み込み中...
-      </div>
-
-    </div>
-
-  </section>
-
-</section>
-
-
-
+<!-- 遠征日 -->
+<div class="form-group"><label>遠征日<span class="required">必須</span></label><input type="date" id="tripDate" required></div>
+<!-- 遠征先 -->
+<div class="form-group"><label>遠征先<span class="required">必須</span></label><input type="text" id="destination" placeholder="例：私学フェア2026" required></div>
+<!-- 大会 -->
+<div class="form-group"><label>イベント名<span class="required">必須</span></label><input type="text" id="eventName" required></div>
+<!-- 出発地 -->
+<div class="form-group"><label for="departure">出発地<span class="required">必須</span></label><input type="text" id="departure" placeholder="例：京阪宇治駅" required></div>
+<!-- 経由地 -->
+<div class="form-group"><label>経由地<span class="optional">任意</span></label><div id="viaPoints"></div><button type="button" id="addViaPoint" class="secondary-button">＋ 経由地を追加</button></div>
+<!-- 到着地 -->
+<div class="form-group"><label for="arrival">到着地<span class="required">必須</span></label><input type="text" id="arrival" placeholder="例：JR宇治駅" required></div>
+<!-- 交通費 -->
+<div class="form-group"><label>交通費<span class="required">必須</span></label><div class="money-input"><input type="number" id="transportCost" min="0" step="1" placeholder="0" required><span>円</span></div></div></div>
+<!-- 合計 -->
+<div class="total-box"><span>合計金額</span><strong>¥<span id="totalAmount">0</span></strong></div>
+<!-- 備考 -->
+<div class="form-group"><label>備考</label>
+<textarea id="note" rows="4" placeholder="必要事項があれば入力してください"></textarea></div>
+<!-- 確認 -->
+<label class="confirm-box"><input type="checkbox" id="confirm" required><span>入力内容を確認しました。</span></label><button type="submit" id="submitButton"class="primary-button">交通費を申請する</button>
+</form></section>
+<!-- 自分の申請 -->
+<section class="card">
+<div class="section-title"><div>
+<p class="small-label">MY APPLICATIONS</p><h2>申請状況</h2></div><button id="refreshStudentButton" class="secondary-button">更新</button></div><div id="studentApplications"><div class="loading">読み込み中...</div></div>
+</section></section>
 <!-- ==================================================
      教員画面
 ================================================== -->
-
-<section
-  id="teacherScreen"
-  class="hidden"
->
-
-
-  <div class="welcome-card teacher">
-
-    <div>
-
-      <p class="small-label">
-        TEACHER
-      </p>
-
-      <h2>
-        教員管理画面
-      </h2>
-
-      <p>
-        交通費申請の確認・ステータス変更ができます。
-      </p>
-
-    </div>
-
-  </div>
-
-
-
-  <section class="card">
-
-    <div class="section-title">
-
-      <div>
-
-        <p class="small-label">
-          APPLICATIONS
-        </p>
-
-        <h2>
-          申請一覧
-        </h2>
-
-      </div>
-
-      <button
-        id="refreshTeacherButton"
-        class="secondary-button"
-      >
-        更新
-      </button>
-
-    </div>
-
-
-    <div id="teacherApplications">
-
-      <div class="loading">
-        読み込み中...
-      </div>
-
-    </div>
-
-  </section>
-
-</section>
-
-
-
+<section id="teacherScreen" class="hidden">
+<div class="welcome-card teacher"><div><p class="small-label">TEACHER</p><h2>教員管理画面</h2><p>交通費申請の確認・ステータス変更ができます。</p></div></div>
+<section class="card"><div class="section-title">
+<div><p class="small-label">APPLICATIONS</p><h2>申請一覧</h2></div><button id="refreshTeacherButton" class="secondary-button">更新</button></div>
+<div id="teacherApplications"><div class="loading">読み込み中...</div></div>
+</section></section>
 <!-- ==================================================
      成功画面
 ================================================== -->
-
-<section
-  id="successScreen"
-  class="card success-screen hidden"
->
-
-  <div class="success-icon">
-    ✓
-  </div>
-
-  <h2>
-    申請完了
-  </h2>
-
-  <p>
-    交通費申請を受け付けました。
-  </p>
-
-
-  <div class="application-number">
-
-    <span>
-      申請番号
-    </span>
-
-    <strong id="applicationNumber">
-    </strong>
-
-  </div>
-
-
-  <button
-    id="backToDashboard"
-    class="primary-button"
-  >
-    申請状況へ戻る
-  </button>
-
+<section id="successScreen" class="card success-screen hidden">
+<div class="success-icon">✓</div><h2>申請完了</h2><p>交通費申請を受け付けました。</p>
+<div class="application-number"><span>申請番号</span><strong id="applicationNumber"></strong></div>
+<button id="backToDashboard" class="primary-button">申請状況へ戻る</button>
 </section>
-
-
 </main>
 
-
-
 <footer class="footer">
-
-  <p>
-    ESPORTS CLUB
-  </p>
-
-  <p>
-    交通費申請システム
-  </p>
+<p>ESPORTS CLUB</p><p>交通費申請システム</p>
 
 </footer>
 
