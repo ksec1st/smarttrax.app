@@ -99,20 +99,34 @@
 <!-- ==================================================
      生徒編集モーダル
 ================================================== -->
+
+<!-- 生徒追加・編集モーダル -->
 <div id="studentModal" class="modal hidden">
 <div class="modal-overlay"></div>
-<div class="modal-card"><button id="closeStudentModal" class="modal-close">×</button><h2 id="studentModalTitle">生徒を追加</h2>
-<form id="studentForm">
-<input type="hidden" id="editingStudentId">div class="form-group"><label>ID</label><input type="text" id="studentId" required></div><div class="form-group"><label>氏名</label><input type="text" id="studentEditName" required></div>
-<div class="form-group"><label>学年</label><select id="studentEditGrade" required>
-<option value="">選択してください</option>
-<option value="自己創造1年">自己創造1年</option><option value="自己創造2年">自己創造2年</option><option value="自己創造3年">自己創造3年</option>
-<option value="FA1年">FA1年</option><option value="FA2年">FA2年</option><option value="FA3年">FA3年</option>
-<option value="看護科1年">看護科1年</option><option value="看護科2年">看護科2年</option><option value="看護科3年">看護科3年</option>
-<option value="GC/SS1年">GC/SS1年</option><option value="GC/SS2年">GC/SS2年</option><option value="GC/SS3年">GC/SS3年</option>
+<div class="modal-card"><button type="button" id="closeStudentModal" class="modal-close"aria-label="閉じる">×</button><h2 id="studentModalTitle">生徒を追加</h2><form id="studentForm">
+<input type="hidden" id="editingStudentId">
+<div class="form-group">
+<label for="studentId">ID</label><input type="text" id="studentId"placeholder="例：ks000"required></div>
+<div class="form-group"><label for="studentEditName">氏名</label><input type="text" id="studentEditName" placeholder="例：翔英 太郎"required></div>
+<div class="form-group">
+<label for="studentEditGrade">学年</label><select id="studentEditGrade" required>
+<option value="">学年を選択</option>
+<option value="自己創造1年">自己創造1年</option>
+<option value="自己創造2年">自己創造2年</option>
+<option value="自己創造3年">自己創造3年</option>
+<option value="FA1年">FA1年</option>
+<option value="FA2年">FA2年</option>
+<option value="FA3年">FA3年</option>
+<option value="看護科1年">看護科1年</option>
+<option value="看護科2年">看護科2年</option>
+<option value="看護科3年">看護科3年</option>
+<option value="GC/SS1年">GC/SS1年</option>
+<option value="GC/SS2年">GC/SS2年</option>
+<option value="GC/SS3年">GC/SS3年</option>          
 </select></div>
-<button type="submit" class="primary-button">保存</button>
+<button type="submit" class="primary-button">保存する</button>
 </form></div></div>
+
 
 <script src="script.js"></script>
 </body>
