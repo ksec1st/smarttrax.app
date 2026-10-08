@@ -36,567 +36,84 @@
 <div class="form-group"><label>クラス</label>
 <select id="className" required><option value="">選択してください</option><option value="1組">1組</option><option value="2組">2組</option><option value="3組">3組</option><option value="4組">4組</option><option value="5組">5組</option></select>
 </div>
-<div class="form-group"><label>遠征日</label>
-<input type="date" id="tripDate" required>
-
-        </div>
-
-
-        <div class="form-group full">
-
-          <label>
-            遠征先
-          </label>
-
-          <input
-            type="text"
-            id="destination"
-            placeholder="例：大阪府大阪市"
-            required>
-
-        </div>
-
-
-        <div class="form-group full">
-
-          <label>
-            大会・イベント名
-          </label>
-
-          <input
-            type="text"
-            id="eventName"
-            placeholder="例：○○大会"
-            required>
-
-        </div>
-
-
-        <!-- ==================================================
+<div class="form-group"><label>遠征日</label><input type="date" id="tripDate" required></div><div class="form-group full"><label>遠征先</label>
+<input type="text" id="destination" placeholder="例：京都翔英高等学校"required></div><div class="form-group full"><label>イベント名</label><input type="text" id="eventName" placeholder="例：私学フェア"required></div>
+<!-- ==================================================
              経路
-        ================================================== -->
-
-        <div class="form-group full">
-
-          <label>
-            出発地
-          </label>
-
-          <input
-            type="text"
-            id="departure"
-            placeholder="例：京阪宇治駅"
-            required>
-
-        </div>
-
-
-        <div
-          id="viaContainer"
-          class="form-group full">
-        </div>
-
-
-        <div class="route-actions">
-
-          <button
-            type="button"
-            id="addViaButton"
-            class="secondary-button">
-
-            ＋ 経由地を追加
-
-          </button>
-
-        </div>
-
-
-        <div class="form-group full">
-
-          <label>
-            到着地
-          </label>
-
-          <input
-            type="text"
-            id="arrival"
-            placeholder="例：京都駅"
-            required>
-
-        </div>
-
-
-        <!-- 区間料金 -->
-
-        <div class="form-group full">
-
-          <div class="student-note">
-
-            各区間料金は申請時には記録されますが、
-            合計金額には含まれません。
-
-          </div>
-
-        </div>
-
-
-        <div
-          id="segmentFeeContainer"
-          class="form-group full">
-        </div>
-
-
-        <!-- 交通費 -->
-
-        <div class="form-group full">
-
-          <label>
-            交通費
-          </label>
-
-          <div class="money-input">
-
-            <input
-              type="number"
-              id="transportCost"
-              min="0"
-              step="1"
-              placeholder="0"
-              required>
-
-            <span>
-              円
-            </span>
-
-          </div>
-
-        </div>
-
-
-        <!-- 合計 -->
-
-        <div class="total-box">
-
-          <span>
-            合計金額
-          </span>
-
-          <strong>
-            <span id="totalAmount">
-              0
-            </span>
-            円
-          </strong>
-
-        </div>
-
-
-        <div class="form-group full">
-
-          <label>
-            備考
-          </label>
-
-          <textarea
-            id="note"
-            rows="4"
-            placeholder="必要事項があれば入力してください。">
-          </textarea>
-
-        </div>
-
-
-        <div class="checkbox-area">
-
-          <label>
-
-            <input
-              type="checkbox"
-              id="confirm"
-              required>
-
-            <span>
-              入力内容を確認しました
-            </span>
-
-          </label>
-
-        </div>
-
-
-      </div>
-
-
-      <button
-        type="submit"
-        id="submitButton"
-        class="primary-button">
-
-        申請する
-
-      </button>
-
-
-    </form>
-
-  </div>
-
-
-
-  <!-- 自分の申請 -->
-
-  <div class="card">
-
-    <div class="section-header">
-
-      <div>
-
-        <p class="eyebrow">
-          APPLICATIONS
-        </p>
-
-        <h2>
-          自分の申請
-        </h2>
-
-      </div>
-
-      <button
-        id="refreshStudentButton"
-        class="secondary-button">
-
-        更新
-
-      </button>
-
-    </div>
-
-
-    <div
-      id="studentApplications"
-      class="application-list">
-
-      <p class="empty-message">
-        申請履歴を読み込んでいます…
-      </p>
-
-    </div>
-
-  </div>
-
+================================================== -->
+<div class="form-group full"><label>出発地</label><input type="text" id="departure" placeholder="例：京阪宇治駅"required></div><div id="viaContainer" class="form-group full"></div>
+<div class="route-actions"><button type="button" id="addViaButton" class="secondary-button">＋ 経由地を追加</button></div>
+<div class="form-group full"><label>到着地</label><input type="text" id="arrival" placeholder="例：JR京都駅" required></div>
+<!-- 区間料金 -->
+<div class="form-group full"><div class="student-note">各区間料金は申請時には記録されますが、合計金額には含まれません。</div></div><div id="segmentFeeContainer" class="form-group full"></div>
+<!-- 交通費 -->
+<div class="form-group full"><label>交通費</label><div class="money-input"><input type="number" id="transportCost" min="0" step="1" placeholder="0"required><span>円</span></div></div>
+<!-- 合計 -->
+<div class="total-box"><span>合計金額</span><strong><span id="totalAmount">0</span>円</strong></div>
+<div class="form-group full"><label>備考</label><textarea id="note" rows="4" placeholder="必要事項があれば入力してください。"></textarea></div>
+<div class="checkbox-area"><label><input type="checkbox" id="confirm" required><span>入力内容を確認しました</span></label></div></div>
+<button type="submit" id="submitButton" class="primary-button">申請する</button>
+</form></div>
+<!-- 自分の申請 -->
+<div class="card">
+<div class="section-header"><div>
+<p class="eyebrow">APPLICATIONS</p><h2>自分の申請</h2></div>
+<button id="refreshStudentButton" class="secondary-button">更新</button>
+</div>
+<div id="studentApplications" class="application-list"><p class="empty-message">申請履歴を読み込んでいます…</p></div></div>
 </section>
-
-
-
 <!-- ==================================================
      教員画面
 ================================================== -->
-
-<section
-  id="teacherScreen"
-  class="screen hidden">
-
-
-  <div class="dashboard-header">
-
-    <div>
-
-      <p class="eyebrow">
-        TEACHER
-      </p>
-
-      <h1>
-        管理画面
-      </h1>
-
-      <p id="teacherName"></p>
-
-    </div>
-
-  </div>
-
-
-  <!-- タブ -->
-
-  <div class="admin-tabs">
-
-    <button
-      class="admin-tab active"
-      data-tab="applicationsTab">
-
-      📋 申請管理
-
-    </button>
-
-
-    <button
-      class="admin-tab"
-      data-tab="studentsTab">
-
-      👥 生徒管理
-
-    </button>
-
-  </div>
-
-
-
-  <!-- ==================================================
+<section id="teacherScreen" class="screen hidden">
+<div class="dashboard-header"><div><p class="eyebrow">TEACHER</p><h1>管理画面</h1><p id="teacherName"></p></div></div>
+<!-- タブ -->
+<div class="admin-tabs"><button class="admin-tab active" data-tab="applicationsTab">📋 申請管理</button>
+<button class="admin-tab" data-tab="studentsTab">👥 生徒管理</button></div>
+<!-- ==================================================
        申請管理
-  ================================================== -->
-
-  <div
-    id="applicationsTab"
-    class="admin-tab-content">
-
-
-    <div class="card">
-
-      <div class="section-header">
-
-        <div>
-
-          <p class="eyebrow">
-            APPLICATIONS
-          </p>
-
-          <h2>
-            交通費申請一覧
-          </h2>
-
-        </div>
-
-        <button
-          id="refreshTeacherButton"
-          class="secondary-button">
-
-          更新
-
-        </button>
-
-      </div>
-
-
-      <div
-        id="teacherApplications"
-        class="teacher-applications">
-
-        <p class="empty-message">
-          読み込んでいます…
-        </p>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-
-  <!-- ==================================================
+================================================== -->
+<div id="applicationsTab" class="admin-tab-content">
+<div class="card"><div class="section-header"><div>
+<p class="eyebrow">APPLICATIONS</p><h2>交通費申請一覧</h2></div><button id="refreshTeacherButton"class="secondary-button">更新</button></div>
+<div id="teacherApplications" class="teacher-applications"><p class="empty-message">読み込んでいます…</p></div></div></div>
+<!-- ==================================================
        生徒管理
-  ================================================== -->
-
-  <div
-    id="studentsTab"
-    class="admin-tab-content hidden">
-
-
-    <div class="card">
-
-      <div class="section-header">
-
-        <div>
-
-          <p class="eyebrow">
-            STUDENTS
-          </p>
-
-          <h2>
-            生徒管理
-          </h2>
-
-        </div>
-
-
-        <button
-          id="addStudentButton"
-          class="primary-button small">
-
-          ＋ 生徒を追加
-
-        </button>
-
-      </div>
-
-
-      <div
-        id="studentManagement"
-        class="student-management">
-
-        <p class="empty-message">
-          生徒一覧を読み込んでいます…
-        </p>
-
-      </div>
-
-    </div>
-
-  </div>
-
+================================================== -->
+<div id="studentsTab" class="admin-tab-content hidden">
+<div class="card"><div class="section-header"><div><p class="eyebrow">STUDENTS</p><h2>生徒管理</h2></div>
+<button id="addStudentButton" class="primary-button small">＋ 生徒を追加</button></div>
+<div id="studentManagement" class="student-management"><p class="empty-message">生徒一覧を読み込んでいます…</p>
+</div></div></div>
 </section>
-
-
-
 <!-- ==================================================
      成功画面
 ================================================== -->
-
-<section
-  id="successScreen"
-  class="screen hidden">
-
-  <div class="card success-card">
-
-    <div class="success-icon">
-      ✓
-    </div>
-
-    <h1>
-      申請完了
-    </h1>
-
-    <p>
-      交通費申請を受け付けました。
-    </p>
-
-
-    <div class="application-number">
-
-      <span>
-        申請番号
-      </span>
-
-      <strong id="applicationNumber">
-      </strong>
-
-    </div>
-
-
-    <button
-      id="newApplication"
-      class="primary-button">
-
-      新しい申請をする
-
-    </button>
-
-  </div>
-
+<section id="successScreen" class="screen hidden">
+<div class="card success-card"><div class="success-icon">✓</div><h1>申請完了</h1><p>交通費申請を受け付けました。</p><div class="application-number"><span>申請番号</span> <strong id="applicationNumber"></strong></div>
+<button id="newApplication" class="primary-button"> 新しい申請をする</button></div>
 </section>
-
-
+     
 </main>
-
-
+     
 <!-- ==================================================
      生徒編集モーダル
 ================================================== -->
-
-<div
-  id="studentModal"
-  class="modal hidden">
-
-  <div class="modal-overlay"></div>
-
-  <div class="modal-card">
-
-    <button
-      id="closeStudentModal"
-      class="modal-close">
-      ×
-    </button>
-
-    <h2 id="studentModalTitle">
-      生徒を追加
-    </h2>
-
-
-    <form id="studentForm">
-
-      <input
-        type="hidden"
-        id="editingStudentId">
-
-
-      <div class="form-group">
-
-        <label>
-          ID
-        </label>
-
-        <input
-          type="text"
-          id="studentId"
-          required>
-
-      </div>
-
-
-      <div class="form-group">
-
-        <label>
-          氏名
-        </label>
-
-        <input
-          type="text"
-          id="studentEditName"
-          required>
-
-      </div>
-
-
-      <div class="form-group">
-
-        <label>
-          学年
-        </label>
-
-        <select
-          id="studentEditGrade"
-          required>
-
-          <option value="">
-            選択してください
-          </option>
-
-          <option value="1年">1年</option>
-          <option value="2年">2年</option>
-          <option value="3年">3年</option>
-
-        </select>
-
-      </div>
-
-
-      <button
-        type="submit"
-        class="primary-button">
-
-        保存
-
-      </button>
-
-    </form>
-
-  </div>
-
-</div>
-
+<div id="studentModal" class="modal hidden">
+<div class="modal-overlay"></div>
+<div class="modal-card"><button id="closeStudentModal" class="modal-close">×</button><h2 id="studentModalTitle">生徒を追加</h2>
+<form id="studentForm">
+<input type="hidden" id="editingStudentId">div class="form-group"><label>ID</label><input type="text" id="studentId" required></div><div class="form-group"><label>氏名</label><input type="text" id="studentEditName" required></div>
+<div class="form-group"><label>学年</label><select id="studentEditGrade" required>
+<option value="">選択してください</option>
+<option value="自己創造1年">自己創造1年</option><option value="自己創造2年">自己創造2年</option><option value="自己創造3年">自己創造3年</option>
+<option value="FA1年">FA1年</option><option value="FA2年">FA2年</option><option value="FA3年">FA3年</option>
+<option value="看護科1年">看護科1年</option><option value="看護科2年">看護科2年</option><option value="看護科3年"看護科3年</option>
+<option value="GC/SS1年">GC/SS1年</option><option value="GC/SS2年">GC/SS2年</option><option value="GC/SS3年">GC/SS3年</option>
+</select></div>
+<button type="submit" class="primary-button">保存</button>
+</form></div></div>
 
 <script src="script.js"></script>
-
 </body>
-
 </html>
