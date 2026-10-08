@@ -1,6 +1,6 @@
 /* ==================================================
+   SmartTrax
    交通費申請システム
-   GitHub Pages × Google Apps Script
 ================================================== */
 
 
@@ -115,14 +115,26 @@ const addViaPoint =
 
 
 /* ==================================================
+   区間料金
+================================================== */
+
+const routeCosts =
+  document.getElementById("routeCosts");
+
+
+/* ==================================================
    生徒申請履歴
 ================================================== */
 
 const studentApplications =
-  document.getElementById("studentApplications");
+  document.getElementById(
+    "studentApplications"
+  );
 
 const refreshStudentButton =
-  document.getElementById("refreshStudentButton");
+  document.getElementById(
+    "refreshStudentButton"
+  );
 
 
 /* ==================================================
@@ -130,10 +142,14 @@ const refreshStudentButton =
 ================================================== */
 
 const teacherApplications =
-  document.getElementById("teacherApplications");
+  document.getElementById(
+    "teacherApplications"
+  );
 
 const refreshTeacherButton =
-  document.getElementById("refreshTeacherButton");
+  document.getElementById(
+    "refreshTeacherButton"
+  );
 
 
 /* ==================================================
@@ -141,13 +157,19 @@ const refreshTeacherButton =
 ================================================== */
 
 const applicationNumber =
-  document.getElementById("applicationNumber");
+  document.getElementById(
+    "applicationNumber"
+  );
 
 const backToDashboard =
-  document.getElementById("backToDashboard");
+  document.getElementById(
+    "backToDashboard"
+  );
 
 const newApplication =
-  document.getElementById("newApplication");
+  document.getElementById(
+    "newApplication"
+  );
 
 
 /* ==================================================
@@ -171,6 +193,7 @@ document.addEventListener(
 ================================================== */
 
 function setupEvents() {
+
 
   /* ログイン */
 
@@ -196,13 +219,37 @@ function setupEvents() {
   }
 
 
-  /* 交通費 → 合計金額 */
+  /* 交通費 */
 
   if (transportCost) {
 
     transportCost.addEventListener(
       "input",
       updateTotal
+    );
+
+  }
+
+
+  /* 出発地 */
+
+  if (departure) {
+
+    departure.addEventListener(
+      "input",
+      updateRouteCosts
+    );
+
+  }
+
+
+  /* 到着地 */
+
+  if (arrival) {
+
+    arrival.addEventListener(
+      "input",
+      updateRouteCosts
     );
 
   }
@@ -236,7 +283,7 @@ function setupEvents() {
   }
 
 
-  /* 生徒申請履歴更新 */
+  /* 生徒申請履歴 */
 
   if (refreshStudentButton) {
 
@@ -248,7 +295,7 @@ function setupEvents() {
   }
 
 
-  /* 教員申請一覧更新 */
+  /* 教員申請一覧 */
 
   if (refreshTeacherButton) {
 
@@ -270,11 +317,17 @@ function setupEvents() {
 
         showStudentDashboard();
 
-        expenseForm.reset();
+        if (expenseForm) {
+
+          expenseForm.reset();
+
+        }
 
         clearViaPoints();
 
         updateTotal();
+
+        updateRouteCosts();
 
         window.scrollTo({
           top: 0,
@@ -287,7 +340,7 @@ function setupEvents() {
   }
 
 
-  /* ダッシュボードへ */
+  /* ダッシュボード */
 
   if (backToDashboard) {
 
@@ -323,6 +376,7 @@ async function apiRequest(data) {
         },
 
         body: JSON.stringify(data)
+
       }
     );
 
@@ -403,7 +457,9 @@ async function handleLogin(event) {
 
     localStorage.setItem(
       "expenseCurrentUser",
-      JSON.stringify(currentUser)
+      JSON.stringify(
+        currentUser
+      )
     );
 
 
@@ -449,7 +505,9 @@ function restoreLogin() {
   try {
 
     currentUser =
-      JSON.parse(savedUser);
+      JSON.parse(
+        savedUser
+      );
 
 
     if (
@@ -479,18 +537,24 @@ function restoreLogin() {
 
 
 /* ==================================================
-   画面切り替え
+   ログイン画面
 ================================================== */
 
 function showLoginScreen() {
 
   hideAllScreens();
 
-  loginScreen.classList.remove("hidden");
+
+  loginScreen.classList.remove(
+    "hidden"
+  );
+
 
   if (logoutButton) {
 
-    logoutButton.classList.add("hidden");
+    logoutButton.classList.add(
+      "hidden"
+    );
 
   }
 
@@ -517,12 +581,16 @@ function showDashboard() {
 
   if (logoutButton) {
 
-    logoutButton.classList.remove("hidden");
+    logoutButton.classList.remove(
+      "hidden"
+    );
 
   }
 
 
-  if (currentUser.role === "教員") {
+  if (
+    currentUser.role === "教員"
+  ) {
 
     showTeacherDashboard();
 
@@ -598,7 +666,7 @@ function showTeacherDashboard() {
 
 
 /* ==================================================
-   画面を全部隠す
+   画面を隠す
 ================================================== */
 
 function hideAllScreens() {
@@ -650,6 +718,8 @@ function logout() {
 
   updateTotal();
 
+  updateRouteCosts();
+
 
   showLoginScreen();
 
@@ -666,7 +736,9 @@ function showLoginMessage(
 ) {
 
   if (!loginMessage) {
+
     return;
+
   }
 
 
@@ -688,8 +760,13 @@ function showLoginMessage(
 
 function updateTotal() {
 
-  if (!transportCost || !totalAmount) {
+  if (
+    !transportCost ||
+    !totalAmount
+  ) {
+
     return;
+
   }
 
 
@@ -700,7 +777,8 @@ function updateTotal() {
 
 
   totalAmount.textContent =
-    amount.toLocaleString() + "円";
+    "¥" +
+    amount.toLocaleString();
 
 }
 
@@ -714,12 +792,16 @@ function addViaPointInput(
 ) {
 
   if (!viaPoints) {
+
     return;
+
   }
 
 
   const wrapper =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
 
 
   wrapper.className =
@@ -727,10 +809,13 @@ function addViaPointInput(
 
 
   const input =
-    document.createElement("input");
+    document.createElement(
+      "input"
+    );
 
 
-  input.type = "text";
+  input.type =
+    "text";
 
   input.className =
     "via-point-input";
@@ -743,7 +828,9 @@ function addViaPointInput(
 
 
   const removeButton =
-    document.createElement("button");
+    document.createElement(
+      "button"
+    );
 
 
   removeButton.type =
@@ -756,17 +843,31 @@ function addViaPointInput(
     "削除";
 
 
+  /* 経由地入力 */
+
+  input.addEventListener(
+    "input",
+    updateRouteCosts
+  );
+
+
+  /* 経由地削除 */
+
   removeButton.addEventListener(
     "click",
     () => {
 
       wrapper.remove();
 
+      updateRouteCosts();
+
     }
   );
 
 
-  wrapper.appendChild(input);
+  wrapper.appendChild(
+    input
+  );
 
   wrapper.appendChild(
     removeButton
@@ -777,21 +878,27 @@ function addViaPointInput(
     wrapper
   );
 
+
+  updateRouteCosts();
+
 }
 
 
 /* ==================================================
-   経由地全削除
+   経由地削除
 ================================================== */
 
 function clearViaPoints() {
 
   if (!viaPoints) {
+
     return;
+
   }
 
 
-  viaPoints.innerHTML = "";
+  viaPoints.innerHTML =
+    "";
 
 }
 
@@ -808,21 +915,203 @@ function getViaPoints() {
     );
 
 
-  const values =
-    Array.from(inputs)
+  return Array.from(
+    inputs
+  )
 
-      .map(
-        input =>
-          input.value.trim()
-      )
+    .map(
+      input =>
+        input.value.trim()
+    )
 
-      .filter(
-        value =>
-          value !== ""
-      );
+    .filter(
+      value =>
+        value !== ""
+    );
+
+}
 
 
-  return values;
+/* ==================================================
+   区間料金を更新
+================================================== */
+
+function updateRouteCosts() {
+
+  if (!routeCosts) {
+
+    return;
+
+  }
+
+
+  const departureValue =
+    departure
+      ? departure.value.trim()
+      : "";
+
+
+  const arrivalValue =
+    arrival
+      ? arrival.value.trim()
+      : "";
+
+
+  const viaPointValues =
+    getViaPoints();
+
+
+  const locations = [
+
+    departureValue,
+
+    ...viaPointValues,
+
+    arrivalValue
+
+  ];
+
+
+  /*
+   * 出発地と到着地が
+   * まだ入力されていない
+   */
+
+  if (
+    !departureValue ||
+    !arrivalValue
+  ) {
+
+    routeCosts.innerHTML =
+      `
+      <div class="route-cost-empty">
+
+        出発地と到着地を入力すると、
+        区間ごとの料金を入力できます。
+
+      </div>
+      `;
+
+    return;
+
+  }
+
+
+  let html = "";
+
+
+  /*
+   * 各区間を生成
+   */
+
+  for (
+    let i = 0;
+    i < locations.length - 1;
+    i++
+  ) {
+
+    const from =
+      locations[i];
+
+    const to =
+      locations[i + 1];
+
+
+    html += `
+
+      <div class="route-cost-item">
+
+
+        <div class="route-name">
+
+          <span class="route-place">
+
+            ${escapeHtml(from)}
+
+          </span>
+
+
+          <span class="route-arrow">
+            →
+          </span>
+
+
+          <span class="route-place">
+
+            ${escapeHtml(to)}
+
+          </span>
+
+        </div>
+
+
+        <div class="route-price">
+
+          <input
+            type="number"
+            class="route-cost-input"
+            data-from="${escapeHtml(from)}"
+            data-to="${escapeHtml(to)}"
+            min="0"
+            placeholder="料金"
+          >
+
+          <span>
+            円
+          </span>
+
+        </div>
+
+
+      </div>
+
+    `;
+
+  }
+
+
+  routeCosts.innerHTML =
+    html;
+
+}
+
+
+/* ==================================================
+   区間料金取得
+================================================== */
+
+function getRouteCosts() {
+
+  const inputs =
+    document.querySelectorAll(
+      ".route-cost-input"
+    );
+
+
+  return Array.from(
+    inputs
+  )
+
+    .map(
+      input => {
+
+        return {
+
+          from:
+            input.dataset.from,
+
+          to:
+            input.dataset.to,
+
+          cost:
+            Number(
+              input.value
+            ) || 0
+
+        };
+
+      }
+    );
 
 }
 
@@ -831,7 +1120,9 @@ function getViaPoints() {
    申請送信
 ================================================== */
 
-async function handleSubmit(event) {
+async function handleSubmit(
+  event
+) {
 
   event.preventDefault();
 
@@ -853,7 +1144,7 @@ async function handleSubmit(event) {
   ) {
 
     alert(
-      "内容を確認してチェックを入れてください。"
+      "入力内容を確認してチェックを入れてください。"
     );
 
     return;
@@ -879,43 +1170,72 @@ async function handleSubmit(event) {
 
   const data = {
 
-    action: "submit",
+    action:
+      "submit",
+
 
     userId:
       currentUser.id,
 
+
     name:
       nameInput.value.trim(),
+
 
     grade:
       grade.value,
 
+
     className:
       className.value,
+
 
     tripDate:
       tripDate.value,
 
+
     destination:
       destination.value.trim(),
+
 
     eventName:
       eventName.value.trim(),
 
+
     departure:
       departure.value.trim(),
+
 
     viaPoints:
       viaPointText,
 
+
     arrival:
       arrival.value.trim(),
+
+
+    /*
+     * 区間料金
+     *
+     * 記録用
+     * 合計金額には含めない
+     */
+
+    routeCosts:
+      getRouteCosts(),
+
+
+    /*
+     * 実際の申請金額
+     */
 
     transportCost:
       cost,
 
+
     totalAmount:
       cost,
+
 
     note:
       note.value.trim()
@@ -925,6 +1245,7 @@ async function handleSubmit(event) {
 
   submitButton.disabled =
     true;
+
 
   submitButton.textContent =
     "送信中...";
@@ -956,6 +1277,8 @@ async function handleSubmit(event) {
 
     updateTotal();
 
+    updateRouteCosts();
+
 
   } catch (error) {
 
@@ -973,8 +1296,9 @@ async function handleSubmit(event) {
     submitButton.disabled =
       false;
 
+
     submitButton.textContent =
-      "申請する";
+      "交通費を申請する";
 
   }
 
@@ -982,25 +1306,31 @@ async function handleSubmit(event) {
 
 
 /* ==================================================
-   生徒：申請履歴取得
+   生徒：申請履歴
 ================================================== */
 
 async function loadStudentApplications() {
 
   if (!currentUser) {
+
     return;
+
   }
 
 
   if (!studentApplications) {
+
     return;
+
   }
 
 
   studentApplications.innerHTML =
-    `<div class="loading">
+    `
+    <div class="loading">
       読み込み中...
-    </div>`;
+    </div>
+    `;
 
 
   try {
@@ -1028,11 +1358,15 @@ async function loadStudentApplications() {
 
 
     studentApplications.innerHTML =
-      `<div class="message error-message">
+      `
+      <div class="message error-message">
+
         ${escapeHtml(
           error.message
         )}
-      </div>`;
+
+      </div>
+      `;
 
   }
 
@@ -1040,7 +1374,7 @@ async function loadStudentApplications() {
 
 
 /* ==================================================
-   生徒：申請履歴表示
+   生徒：申請表示
 ================================================== */
 
 function renderStudentApplications(
@@ -1053,9 +1387,13 @@ function renderStudentApplications(
   ) {
 
     studentApplications.innerHTML =
-      `<div class="empty-message">
+      `
+      <div class="empty-message">
+
         まだ申請はありません。
-      </div>`;
+
+      </div>
+      `;
 
     return;
 
@@ -1077,13 +1415,15 @@ function renderStudentApplications(
 
 
 /* ==================================================
-   教員：全申請取得
+   教員：全申請
 ================================================== */
 
 async function loadTeacherApplications() {
 
   if (!currentUser) {
+
     return;
+
   }
 
 
@@ -1097,14 +1437,18 @@ async function loadTeacherApplications() {
 
 
   if (!teacherApplications) {
+
     return;
+
   }
 
 
   teacherApplications.innerHTML =
-    `<div class="loading">
+    `
+    <div class="loading">
       読み込み中...
-    </div>`;
+    </div>
+    `;
 
 
   try {
@@ -1132,11 +1476,15 @@ async function loadTeacherApplications() {
 
 
     teacherApplications.innerHTML =
-      `<div class="message error-message">
+      `
+      <div class="message error-message">
+
         ${escapeHtml(
           error.message
         )}
-      </div>`;
+
+      </div>
+      `;
 
   }
 
@@ -1144,7 +1492,7 @@ async function loadTeacherApplications() {
 
 
 /* ==================================================
-   教員：申請一覧表示
+   教員：申請表示
 ================================================== */
 
 function renderTeacherApplications(
@@ -1157,9 +1505,13 @@ function renderTeacherApplications(
   ) {
 
     teacherApplications.innerHTML =
-      `<div class="empty-message">
+      `
+      <div class="empty-message">
+
         申請はありません。
-      </div>`;
+
+      </div>
+      `;
 
     return;
 
@@ -1181,7 +1533,7 @@ function renderTeacherApplications(
 
 
 /* ==================================================
-   申請カード生成
+   申請カード
 ================================================== */
 
 function createApplicationCard(
@@ -1198,24 +1550,91 @@ function createApplicationCard(
     `status-${status}`;
 
 
+  /*
+   * 経由地
+   */
+
   const viaHtml =
     app.viaPoints
       ? `
         <p>
-          <strong>経由地：</strong>
+
+          <strong>
+            経由地：
+          </strong>
+
           ${escapeHtml(
             app.viaPoints
           )}
+
         </p>
       `
       : "";
 
 
+  /*
+   * 区間料金
+   */
+
+  let routeCostsHtml =
+    "";
+
+
+  if (
+    app.routeCosts &&
+    app.routeCosts.length > 0
+  ) {
+
+    routeCostsHtml = `
+
+      <p>
+
+        <strong>
+          区間料金：
+        </strong>
+
+        <br>
+
+        ${app.routeCosts
+          .map(
+            route => `
+              ${escapeHtml(
+                route.from
+              )}
+              →
+              ${escapeHtml(
+                route.to
+              )}
+              ：
+              ¥${Number(
+                route.cost || 0
+              ).toLocaleString()}
+              <br>
+            `
+          )
+          .join("")}
+
+      </p>
+
+    `;
+
+  }
+
+
+  /*
+   * 教員用ステータス
+   */
+
   const teacherStatusHtml =
     isTeacher
       ? `
+
         <p>
-          <strong>ステータス：</strong>
+
+          <strong>
+            ステータス：
+          </strong>
+
 
           <select
             class="status-select"
@@ -1231,45 +1650,76 @@ function createApplicationCard(
 
             <option
               value="未確認"
-              ${status === "未確認" ? "selected" : ""}
+              ${
+                status === "未確認"
+                  ? "selected"
+                  : ""
+              }
             >
               未確認
             </option>
 
+
             <option
               value="確認中"
-              ${status === "確認中" ? "selected" : ""}
+              ${
+                status === "確認中"
+                  ? "selected"
+                  : ""
+              }
             >
               確認中
             </option>
 
+
             <option
               value="承認"
-              ${status === "承認" ? "selected" : ""}
+              ${
+                status === "承認"
+                  ? "selected"
+                  : ""
+              }
             >
               承認
             </option>
 
+
             <option
               value="差し戻し"
-              ${status === "差し戻し" ? "selected" : ""}
+              ${
+                status === "差し戻し"
+                  ? "selected"
+                  : ""
+              }
             >
               差し戻し
             </option>
 
+
             <option
               value="支払済"
-              ${status === "支払済" ? "selected" : ""}
+              ${
+                status === "支払済"
+                  ? "selected"
+                  : ""
+              }
             >
               支払済
             </option>
 
           </select>
+
         </p>
+
       `
       : `
+
         <p>
-          <strong>ステータス：</strong>
+
+          <strong>
+            ステータス：
+          </strong>
+
 
           <span
             class="status ${statusClass}"
@@ -1278,86 +1728,135 @@ function createApplicationCard(
               status
             )}
           </span>
+
         </p>
+
       `;
 
 
   return `
-    <div class="
-      application-card
-      ${isTeacher
-        ? "teacher-application"
-        : ""}
-    ">
+
+    <div
+      class="
+        application-card
+        ${
+          isTeacher
+            ? "teacher-application"
+            : ""
+        }
+      "
+    >
+
 
       <div class="application-header">
 
         <span class="application-number">
+
           ${escapeHtml(
             app.applicationNumber
           )}
+
         </span>
 
+
         <span class="application-date">
+
           ${escapeHtml(
             app.tripDate || ""
           )}
+
         </span>
 
       </div>
 
 
+
       <div class="application-info">
+
 
         ${
           isTeacher
             ? `
+
               <p>
-                <strong>申請者：</strong>
+
+                <strong>
+                  申請者：
+                </strong>
+
                 ${escapeHtml(
                   app.name || ""
                 )}
+
               </p>
 
+
               <p>
-                <strong>学年：</strong>
+
+                <strong>
+                  学年：
+                </strong>
+
                 ${escapeHtml(
                   app.grade || ""
                 )}
+
               </p>
 
+
               <p>
-                <strong>クラス：</strong>
+
+                <strong>
+                  クラス：
+                </strong>
+
                 ${escapeHtml(
                   app.className || ""
                 )}
+
               </p>
+
             `
             : ""
         }
 
 
         <p>
-          <strong>遠征先：</strong>
+
+          <strong>
+            遠征先：
+          </strong>
+
           ${escapeHtml(
             app.destination || ""
           )}
+
         </p>
 
 
         <p>
-          <strong>大会・イベント：</strong>
+
+          <strong>
+            大会・イベント：
+          </strong>
+
           ${escapeHtml(
             app.eventName || ""
           )}
+
         </p>
 
 
         <p>
-          <strong>出発地：</strong>
+
+          <strong>
+            出発地：
+          </strong>
+
           ${escapeHtml(
             app.departure || ""
           )}
+
         </p>
 
 
@@ -1365,38 +1864,63 @@ function createApplicationCard(
 
 
         <p>
-          <strong>到着地：</strong>
+
+          <strong>
+            到着地：
+          </strong>
+
           ${escapeHtml(
             app.arrival || ""
           )}
+
         </p>
 
 
+        ${routeCostsHtml}
+
+
         <p>
-          <strong>交通費：</strong>
+
+          <strong>
+            交通費：
+          </strong>
+
           ¥${Number(
             app.transportCost || 0
           ).toLocaleString()}
+
         </p>
 
 
         <p>
-          <strong>合計金額：</strong>
+
+          <strong>
+            合計金額：
+          </strong>
+
           ¥${Number(
             app.totalAmount || 0
           ).toLocaleString()}
+
         </p>
 
 
         ${
           app.note
             ? `
+
               <p>
-                <strong>備考：</strong>
+
+                <strong>
+                  備考：
+                </strong>
+
                 ${escapeHtml(
                   app.note
                 )}
+
               </p>
+
             `
             : ""
         }
@@ -1404,9 +1928,11 @@ function createApplicationCard(
 
         ${teacherStatusHtml}
 
+
       </div>
 
     </div>
+
   `;
 
 }
@@ -1422,7 +1948,9 @@ async function changeStatus(
 ) {
 
   if (!currentUser) {
+
     return;
+
   }
 
 
