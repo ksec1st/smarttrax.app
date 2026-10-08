@@ -1,6 +1,7 @@
 /* ==================================================
    交通費申請システム
    写真・Google Drive保存なし
+   交通手段・利用区分・その他交通費なし
 ================================================== */
 
 
@@ -16,13 +17,11 @@ const GAS_URL =
    要素取得
 ================================================== */
 
-const form = document.getElementById("expenseForm");
+const form =
+  document.getElementById("expenseForm");
 
 const transportCost =
   document.getElementById("transportCost");
-
-const otherCost =
-  document.getElementById("otherCost");
 
 const totalAmount =
   document.getElementById("totalAmount");
@@ -41,19 +40,13 @@ const newApplication =
 
 
 /* ==================================================
-   合計金額計算
+   合計金額
 ================================================== */
 
 function calculateTotal() {
 
-  const transport =
-    Number(transportCost.value) || 0;
-
-  const other =
-    Number(otherCost.value) || 0;
-
   const total =
-    transport + other;
+    Number(transportCost.value) || 0;
 
   totalAmount.textContent =
     total.toLocaleString("ja-JP");
@@ -65,11 +58,6 @@ function calculateTotal() {
 ================================================== */
 
 transportCost.addEventListener(
-  "input",
-  calculateTotal
-);
-
-otherCost.addEventListener(
   "input",
   calculateTotal
 );
@@ -92,7 +80,9 @@ form.addEventListener(
 
     if (
       !GAS_URL ||
-      GAS_URL.includes("ここにApps Script")
+      GAS_URL.includes(
+        "ここにApps Script"
+      )
     ) {
 
       alert(
@@ -109,60 +99,78 @@ form.addEventListener(
 
     submitButton.disabled = true;
 
-    submitButton.querySelector("span").textContent =
-      "送信中...";
+    submitButton.querySelector(
+      "span"
+    ).textContent = "送信中...";
 
 
     /* ----------------------------------------------
-       入力内容取得
+       入力データ取得
     ---------------------------------------------- */
 
     const data = {
 
       name:
-        document.getElementById("name").value.trim(),
+        document
+          .getElementById("name")
+          .value
+          .trim(),
 
       grade:
-        document.getElementById("grade").value,
+        document
+          .getElementById("grade")
+          .value,
 
       className:
-        document.getElementById("className").value.trim(),
+        document
+          .getElementById("className")
+          .value
+          .trim(),
 
       tripDate:
-        document.getElementById("tripDate").value,
+        document
+          .getElementById("tripDate")
+          .value,
 
       destination:
-        document.getElementById("destination").value.trim(),
+        document
+          .getElementById("destination")
+          .value
+          .trim(),
 
       eventName:
-        document.getElementById("eventName").value.trim(),
+        document
+          .getElementById("eventName")
+          .value
+          .trim(),
 
       departure:
-        document.getElementById("departure").value.trim(),
+        document
+          .getElementById("departure")
+          .value
+          .trim(),
 
       arrival:
-        document.getElementById("arrival").value.trim(),
-
-      transport:
-        document.getElementById("transport").value,
-
-      roundTrip:
-        document.getElementById("roundTrip").value,
+        document
+          .getElementById("arrival")
+          .value
+          .trim(),
 
       transportCost:
-        Number(transportCost.value) || 0,
-
-      otherCost:
-        Number(otherCost.value) || 0,
+        Number(
+          transportCost.value
+        ) || 0,
 
       totalAmount:
-        (
-          (Number(transportCost.value) || 0) +
-          (Number(otherCost.value) || 0)
-        ),
+        Number(
+          transportCost.value
+        ) || 0,
 
       note:
-        document.getElementById("note").value.trim()
+        document
+          .getElementById("note")
+          .value
+          .trim()
 
     };
 
@@ -173,19 +181,21 @@ form.addEventListener(
 
     try {
 
-      const response = await fetch(
-        GAS_URL,
-        {
-          method: "POST",
+      const response =
+        await fetch(
+          GAS_URL,
+          {
+            method: "POST",
 
-          headers: {
-            "Content-Type":
-              "text/plain;charset=utf-8"
-          },
+            headers: {
+              "Content-Type":
+                "text/plain;charset=utf-8"
+            },
 
-          body: JSON.stringify(data)
-        }
-      );
+            body:
+              JSON.stringify(data)
+          }
+        );
 
 
       /* --------------------------------------------
@@ -218,6 +228,7 @@ form.addEventListener(
 
       }
 
+
       /* --------------------------------------------
          エラー
       -------------------------------------------- */
@@ -233,6 +244,7 @@ form.addEventListener(
 
     }
 
+
     catch (error) {
 
       console.error(error);
@@ -244,12 +256,15 @@ form.addEventListener(
 
     }
 
+
     finally {
 
       submitButton.disabled =
         false;
 
-      submitButton.querySelector("span").textContent =
+      submitButton.querySelector(
+        "span"
+      ).textContent =
         "交通費を申請する";
 
     }
