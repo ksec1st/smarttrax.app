@@ -1,11 +1,11 @@
 /* ==================================================
    交通費申請システム
-   JavaScript
+   GitHub Pages × Google Apps Script
 ================================================== */
 
 
 /* ==================================================
-   Google Apps Script URL
+   設定
 ================================================== */
 
 const GAS_URL =
@@ -40,7 +40,118 @@ const logoutButton =
 
 
 /* ==================================================
-   ページ読み込み
+   ログイン
+================================================== */
+
+const loginForm =
+  document.getElementById("loginForm");
+
+const loginId =
+  document.getElementById("loginId");
+
+const loginMessage =
+  document.getElementById("loginMessage");
+
+
+/* ==================================================
+   生徒
+================================================== */
+
+const studentName =
+  document.getElementById("studentName");
+
+const expenseForm =
+  document.getElementById("expenseForm");
+
+const nameInput =
+  document.getElementById("name");
+
+const grade =
+  document.getElementById("grade");
+
+const className =
+  document.getElementById("className");
+
+const tripDate =
+  document.getElementById("tripDate");
+
+const destination =
+  document.getElementById("destination");
+
+const eventName =
+  document.getElementById("eventName");
+
+const departure =
+  document.getElementById("departure");
+
+const arrival =
+  document.getElementById("arrival");
+
+const transportCost =
+  document.getElementById("transportCost");
+
+const totalAmount =
+  document.getElementById("totalAmount");
+
+const note =
+  document.getElementById("note");
+
+const confirmCheckbox =
+  document.getElementById("confirm");
+
+const submitButton =
+  document.getElementById("submitButton");
+
+
+/* ==================================================
+   経由地
+================================================== */
+
+const viaPoints =
+  document.getElementById("viaPoints");
+
+const addViaPoint =
+  document.getElementById("addViaPoint");
+
+
+/* ==================================================
+   生徒申請履歴
+================================================== */
+
+const studentApplications =
+  document.getElementById("studentApplications");
+
+const refreshStudentButton =
+  document.getElementById("refreshStudentButton");
+
+
+/* ==================================================
+   教員
+================================================== */
+
+const teacherApplications =
+  document.getElementById("teacherApplications");
+
+const refreshTeacherButton =
+  document.getElementById("refreshTeacherButton");
+
+
+/* ==================================================
+   成功画面
+================================================== */
+
+const applicationNumber =
+  document.getElementById("applicationNumber");
+
+const backToDashboard =
+  document.getElementById("backToDashboard");
+
+const newApplication =
+  document.getElementById("newApplication");
+
+
+/* ==================================================
+   初期化
 ================================================== */
 
 document.addEventListener(
@@ -61,100 +172,185 @@ document.addEventListener(
 
 function setupEvents() {
 
+  /* ログイン */
 
-  /* ------------------------------------------
-     ログイン
-  ------------------------------------------ */
+  if (loginForm) {
 
-  document
-    .getElementById("loginForm")
-    .addEventListener(
+    loginForm.addEventListener(
       "submit",
-      login
+      handleLogin
     );
 
+  }
 
-  /* ------------------------------------------
-     ログアウト
-  ------------------------------------------ */
 
-  logoutButton
-    .addEventListener(
+  /* ログアウト */
+
+  if (logoutButton) {
+
+    logoutButton.addEventListener(
       "click",
       logout
     );
 
+  }
 
-  /* ------------------------------------------
-     金額
-  ------------------------------------------ */
 
-  document
-    .getElementById("transportCost")
-    .addEventListener(
+  /* 交通費 → 合計金額 */
+
+  if (transportCost) {
+
+    transportCost.addEventListener(
       "input",
       updateTotal
     );
 
-
-  /* ------------------------------------------
-     申請
-  ------------------------------------------ */
-
-  document
-    .getElementById("expenseForm")
-    .addEventListener(
-      "submit",
-      submitApplication
-    );
+  }
 
 
-  /* ------------------------------------------
-     生徒更新
-  ------------------------------------------ */
+  /* 経由地追加 */
 
-  document
-    .getElementById("refreshStudentButton")
-    .addEventListener(
-      "click",
-      loadMyApplications
-    );
+  if (addViaPoint) {
 
-
-  /* ------------------------------------------
-     教員更新
-  ------------------------------------------ */
-
-  document
-    .getElementById("refreshTeacherButton")
-    .addEventListener(
-      "click",
-      loadAllApplications
-    );
-
-
-  /* ------------------------------------------
-     成功画面
-  ------------------------------------------ */
-
-  document
-    .getElementById("backToDashboard")
-    .addEventListener(
+    addViaPoint.addEventListener(
       "click",
       () => {
 
-        successScreen
-          .classList
-          .add("hidden");
-
-        studentScreen
-          .classList
-          .remove("hidden");
-
-        loadMyApplications();
+        addViaPointInput();
 
       }
     );
+
+  }
+
+
+  /* 申請 */
+
+  if (expenseForm) {
+
+    expenseForm.addEventListener(
+      "submit",
+      handleSubmit
+    );
+
+  }
+
+
+  /* 生徒申請履歴更新 */
+
+  if (refreshStudentButton) {
+
+    refreshStudentButton.addEventListener(
+      "click",
+      loadStudentApplications
+    );
+
+  }
+
+
+  /* 教員申請一覧更新 */
+
+  if (refreshTeacherButton) {
+
+    refreshTeacherButton.addEventListener(
+      "click",
+      loadTeacherApplications
+    );
+
+  }
+
+
+  /* 新しい申請 */
+
+  if (newApplication) {
+
+    newApplication.addEventListener(
+      "click",
+      () => {
+
+        showStudentDashboard();
+
+        expenseForm.reset();
+
+        clearViaPoints();
+
+        updateTotal();
+
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
+
+      }
+    );
+
+  }
+
+
+  /* ダッシュボードへ */
+
+  if (backToDashboard) {
+
+    backToDashboard.addEventListener(
+      "click",
+      () => {
+
+        showDashboard();
+
+      }
+    );
+
+  }
+
+}
+
+
+/* ==================================================
+   API
+================================================== */
+
+async function apiRequest(data) {
+
+  const response =
+    await fetch(
+      GAS_URL,
+      {
+        method: "POST",
+
+        headers: {
+          "Content-Type":
+            "text/plain;charset=utf-8"
+        },
+
+        body: JSON.stringify(data)
+      }
+    );
+
+
+  if (!response.ok) {
+
+    throw new Error(
+      `通信エラー: ${response.status}`
+    );
+
+  }
+
+
+  const result =
+    await response.json();
+
+
+  if (!result.success) {
+
+    throw new Error(
+      result.message ||
+      "処理に失敗しました。"
+    );
+
+  }
+
+
+  return result;
 
 }
 
@@ -163,34 +359,30 @@ function setupEvents() {
    ログイン
 ================================================== */
 
-async function login(event) {
+async function handleLogin(event) {
 
   event.preventDefault();
 
 
-  const input =
-    document.getElementById("loginId");
-
-  const message =
-    document.getElementById("loginMessage");
+  const id =
+    loginId.value.trim();
 
 
-  const userId =
-    input.value.trim();
+  if (!id) {
 
-
-  if (!userId) {
-
-    message.textContent =
-      "IDを入力してください。";
+    showLoginMessage(
+      "IDを入力してください。",
+      true
+    );
 
     return;
 
   }
 
 
-  message.textContent =
-    "ログインしています...";
+  showLoginMessage(
+    "ログインしています..."
+  );
 
 
   try {
@@ -200,18 +392,9 @@ async function login(event) {
 
         action: "login",
 
-        userId: userId
+        userId: id
 
       });
-
-
-    if (!result.success) {
-
-      throw new Error(
-        result.message
-      );
-
-    }
 
 
     currentUser =
@@ -219,10 +402,8 @@ async function login(event) {
 
 
     localStorage.setItem(
-      "expenseUser",
-      JSON.stringify(
-        currentUser
-      )
+      "expenseCurrentUser",
+      JSON.stringify(currentUser)
     );
 
 
@@ -231,8 +412,13 @@ async function login(event) {
 
   } catch (error) {
 
-    message.textContent =
-      error.message;
+    console.error(error);
+
+
+    showLoginMessage(
+      error.message,
+      true
+    );
 
   }
 
@@ -240,26 +426,30 @@ async function login(event) {
 
 
 /* ==================================================
-   ログイン状態復元
+   ログイン復元
 ================================================== */
 
 function restoreLogin() {
 
-  const saved =
+  const savedUser =
     localStorage.getItem(
-      "expenseUser"
+      "expenseCurrentUser"
     );
 
 
-  if (!saved) {
+  if (!savedUser) {
+
+    showLoginScreen();
+
     return;
+
   }
 
 
   try {
 
     currentUser =
-      JSON.parse(saved);
+      JSON.parse(savedUser);
 
 
     if (
@@ -275,11 +465,13 @@ function restoreLogin() {
     showDashboard();
 
 
-  } catch {
+  } catch (error) {
 
     localStorage.removeItem(
-      "expenseUser"
+      "expenseCurrentUser"
     );
+
+    showLoginScreen();
 
   }
 
@@ -287,78 +479,148 @@ function restoreLogin() {
 
 
 /* ==================================================
-   ダッシュボード表示
+   画面切り替え
+================================================== */
+
+function showLoginScreen() {
+
+  hideAllScreens();
+
+  loginScreen.classList.remove("hidden");
+
+  if (logoutButton) {
+
+    logoutButton.classList.add("hidden");
+
+  }
+
+}
+
+
+/* ==================================================
+   ダッシュボード
 ================================================== */
 
 function showDashboard() {
 
-  loginScreen
-    .classList
-    .add("hidden");
-
-  logoutButton
-    .classList
-    .remove("hidden");
+  hideAllScreens();
 
 
-  if (
-    currentUser.role === "教員"
-  ) {
+  if (!currentUser) {
 
-    studentScreen
-      .classList
-      .add("hidden");
+    showLoginScreen();
 
-    teacherScreen
-      .classList
-      .remove("hidden");
+    return;
 
-    document
-      .getElementById("studentName")
-      .textContent =
-      currentUser.name || "";
+  }
 
-    loadAllApplications();
+
+  if (logoutButton) {
+
+    logoutButton.classList.remove("hidden");
+
+  }
+
+
+  if (currentUser.role === "教員") {
+
+    showTeacherDashboard();
 
   } else {
 
-    teacherScreen
-      .classList
-      .add("hidden");
+    showStudentDashboard();
 
-    studentScreen
-      .classList
-      .remove("hidden");
+  }
+
+}
 
 
-    document
-      .getElementById("studentName")
-      .textContent =
+/* ==================================================
+   生徒画面
+================================================== */
+
+function showStudentDashboard() {
+
+  hideAllScreens();
+
+
+  studentScreen.classList.remove(
+    "hidden"
+  );
+
+
+  if (studentName) {
+
+    studentName.textContent =
       currentUser.name || "";
 
-
-    /* ------------------------------------------
-       自動入力
-    ------------------------------------------ */
-
-    const name =
-      document.getElementById("name");
-
-    const grade =
-      document.getElementById("grade");
+  }
 
 
-    name.value =
+  if (nameInput) {
+
+    nameInput.value =
       currentUser.name || "";
 
+  }
+
+
+  if (grade) {
 
     grade.value =
       currentUser.grade || "";
 
-
-    loadMyApplications();
-
   }
+
+
+  loadStudentApplications();
+
+}
+
+
+/* ==================================================
+   教員画面
+================================================== */
+
+function showTeacherDashboard() {
+
+  hideAllScreens();
+
+
+  teacherScreen.classList.remove(
+    "hidden"
+  );
+
+
+  loadTeacherApplications();
+
+}
+
+
+/* ==================================================
+   画面を全部隠す
+================================================== */
+
+function hideAllScreens() {
+
+  [
+    loginScreen,
+    studentScreen,
+    teacherScreen,
+    successScreen
+  ].forEach(
+    screen => {
+
+      if (screen) {
+
+        screen.classList.add(
+          "hidden"
+        );
+
+      }
+
+    }
+  );
 
 }
 
@@ -373,70 +635,49 @@ function logout() {
 
 
   localStorage.removeItem(
-    "expenseUser"
+    "expenseCurrentUser"
   );
 
 
-  studentScreen
-    .classList
-    .add("hidden");
+  if (expenseForm) {
 
-  teacherScreen
-    .classList
-    .add("hidden");
+    expenseForm.reset();
 
-  successScreen
-    .classList
-    .add("hidden");
-
-  logoutButton
-    .classList
-    .add("hidden");
-
-  loginScreen
-    .classList
-    .remove("hidden");
+  }
 
 
-  document
-    .getElementById("loginId")
-    .value = "";
+  clearViaPoints();
+
+  updateTotal();
+
+
+  showLoginScreen();
 
 }
 
 
 /* ==================================================
-   API
+   ログインメッセージ
 ================================================== */
 
-async function apiRequest(data) {
+function showLoginMessage(
+  message,
+  isError = false
+) {
 
-  const response =
-    await fetch(
-      GAS_URL,
-      {
-
-        method: "POST",
-
-        headers: {
-
-          "Content-Type":
-            "text/plain;charset=utf-8"
-
-        },
-
-        body:
-          JSON.stringify(data)
-
-      }
-    );
+  if (!loginMessage) {
+    return;
+  }
 
 
-  const result =
-    await response.json();
+  loginMessage.textContent =
+    message;
 
 
-  return result;
+  loginMessage.className =
+    isError
+      ? "message error-message"
+      : "message";
 
 }
 
@@ -447,27 +688,150 @@ async function apiRequest(data) {
 
 function updateTotal() {
 
-  const value =
+  if (!transportCost || !totalAmount) {
+    return;
+  }
+
+
+  const amount =
     Number(
-      document
-        .getElementById("transportCost")
-        .value
+      transportCost.value
     ) || 0;
 
 
-  document
-    .getElementById("totalAmount")
-    .textContent =
-    value.toLocaleString();
+  totalAmount.textContent =
+    amount.toLocaleString() + "円";
 
 }
 
 
 /* ==================================================
-   交通費申請
+   経由地追加
 ================================================== */
 
-async function submitApplication(event) {
+function addViaPointInput(
+  value = ""
+) {
+
+  if (!viaPoints) {
+    return;
+  }
+
+
+  const wrapper =
+    document.createElement("div");
+
+
+  wrapper.className =
+    "via-point";
+
+
+  const input =
+    document.createElement("input");
+
+
+  input.type = "text";
+
+  input.className =
+    "via-point-input";
+
+  input.placeholder =
+    "例：大阪駅";
+
+  input.value =
+    value;
+
+
+  const removeButton =
+    document.createElement("button");
+
+
+  removeButton.type =
+    "button";
+
+  removeButton.className =
+    "via-remove";
+
+  removeButton.textContent =
+    "削除";
+
+
+  removeButton.addEventListener(
+    "click",
+    () => {
+
+      wrapper.remove();
+
+    }
+  );
+
+
+  wrapper.appendChild(input);
+
+  wrapper.appendChild(
+    removeButton
+  );
+
+
+  viaPoints.appendChild(
+    wrapper
+  );
+
+}
+
+
+/* ==================================================
+   経由地全削除
+================================================== */
+
+function clearViaPoints() {
+
+  if (!viaPoints) {
+    return;
+  }
+
+
+  viaPoints.innerHTML = "";
+
+}
+
+
+/* ==================================================
+   経由地取得
+================================================== */
+
+function getViaPoints() {
+
+  const inputs =
+    document.querySelectorAll(
+      ".via-point-input"
+    );
+
+
+  const values =
+    Array.from(inputs)
+
+      .map(
+        input =>
+          input.value.trim()
+      )
+
+      .filter(
+        value =>
+          value !== ""
+      );
+
+
+  return values;
+
+}
+
+
+/* ==================================================
+   申請送信
+================================================== */
+
+async function handleSubmit(event) {
 
   event.preventDefault();
 
@@ -483,148 +847,134 @@ async function submitApplication(event) {
   }
 
 
-  const button =
-    document.getElementById(
-      "submitButton"
+  if (
+    confirmCheckbox &&
+    !confirmCheckbox.checked
+  ) {
+
+    alert(
+      "内容を確認してチェックを入れてください。"
+    );
+
+    return;
+
+  }
+
+
+  const viaPointValues =
+    getViaPoints();
+
+
+  const viaPointText =
+    viaPointValues.join(
+      " → "
     );
 
 
-  button.disabled = true;
+  const cost =
+    Number(
+      transportCost.value
+    ) || 0;
 
-  button.textContent =
-    "申請中...";
+
+  const data = {
+
+    action: "submit",
+
+    userId:
+      currentUser.id,
+
+    name:
+      nameInput.value.trim(),
+
+    grade:
+      grade.value,
+
+    className:
+      className.value,
+
+    tripDate:
+      tripDate.value,
+
+    destination:
+      destination.value.trim(),
+
+    eventName:
+      eventName.value.trim(),
+
+    departure:
+      departure.value.trim(),
+
+    viaPoints:
+      viaPointText,
+
+    arrival:
+      arrival.value.trim(),
+
+    transportCost:
+      cost,
+
+    totalAmount:
+      cost,
+
+    note:
+      note.value.trim()
+
+  };
+
+
+  submitButton.disabled =
+    true;
+
+  submitButton.textContent =
+    "送信中...";
 
 
   try {
 
-    const transportCost =
-      Number(
-        document
-          .getElementById(
-            "transportCost"
-          )
-          .value
-      ) || 0;
-
-
-    const data = {
-
-      action: "submit",
-
-      userId:
-        currentUser.id,
-
-      name:
-        document
-          .getElementById("name")
-          .value,
-
-      grade:
-        document
-          .getElementById("grade")
-          .value,
-
-      className:
-        document
-          .getElementById("className")
-          .value,
-
-      tripDate:
-        document
-          .getElementById("tripDate")
-          .value,
-
-      destination:
-        document
-          .getElementById("destination")
-          .value,
-
-      eventName:
-        document
-          .getElementById("eventName")
-          .value,
-
-      departure:
-        document
-          .getElementById("departure")
-          .value,
-
-      arrival:
-        document
-          .getElementById("arrival")
-          .value,
-
-      transportCost:
-        transportCost,
-
-      totalAmount:
-        transportCost,
-
-      note:
-        document
-          .getElementById("note")
-          .value
-
-    };
-
-
     const result =
-      await apiRequest(data);
-
-
-    if (!result.success) {
-
-      throw new Error(
-        result.message
+      await apiRequest(
+        data
       );
 
-    }
 
-
-    /* ------------------------------------------
-       成功画面
-    ------------------------------------------ */
-
-    document
-      .getElementById(
-        "applicationNumber"
-      )
-      .textContent =
+    applicationNumber.textContent =
       result.applicationNumber;
 
 
-    studentScreen
-      .classList
-      .add("hidden");
+    hideAllScreens();
 
 
-    successScreen
-      .classList
-      .remove("hidden");
+    successScreen.classList.remove(
+      "hidden"
+    );
 
 
-    document
-      .getElementById(
-        "expenseForm"
-      )
-      .reset();
+    expenseForm.reset();
 
+    clearViaPoints();
 
     updateTotal();
 
 
   } catch (error) {
 
+    console.error(error);
+
+
     alert(
-      error.message
+      error.message ||
+      "申請に失敗しました。"
     );
+
 
   } finally {
 
-    button.disabled = false;
+    submitButton.disabled =
+      false;
 
-    button.textContent =
-      "交通費を申請する";
+    submitButton.textContent =
+      "申請する";
 
   }
 
@@ -632,23 +982,22 @@ async function submitApplication(event) {
 
 
 /* ==================================================
-   生徒：自分の申請
+   生徒：申請履歴取得
 ================================================== */
 
-async function loadMyApplications() {
+async function loadStudentApplications() {
 
   if (!currentUser) {
     return;
   }
 
 
-  const container =
-    document.getElementById(
-      "studentApplications"
-    );
+  if (!studentApplications) {
+    return;
+  }
 
 
-  container.innerHTML =
+  studentApplications.innerHTML =
     `<div class="loading">
       読み込み中...
     </div>`;
@@ -668,24 +1017,18 @@ async function loadMyApplications() {
       });
 
 
-    if (!result.success) {
-
-      throw new Error(
-        result.message
-      );
-
-    }
-
-
     renderStudentApplications(
-      result.applications
+      result.applications || []
     );
 
 
   } catch (error) {
 
-    container.innerHTML =
-      `<div class="empty">
+    console.error(error);
+
+
+    studentApplications.innerHTML =
+      `<div class="message error-message">
         ${escapeHtml(
           error.message
         )}
@@ -697,26 +1040,20 @@ async function loadMyApplications() {
 
 
 /* ==================================================
-   生徒：申請表示
+   生徒：申請履歴表示
 ================================================== */
 
 function renderStudentApplications(
   applications
 ) {
 
-  const container =
-    document.getElementById(
-      "studentApplications"
-    );
-
-
   if (
     !applications ||
     applications.length === 0
   ) {
 
-    container.innerHTML =
-      `<div class="empty">
+    studentApplications.innerHTML =
+      `<div class="empty-message">
         まだ申請はありません。
       </div>`;
 
@@ -725,14 +1062,13 @@ function renderStudentApplications(
   }
 
 
-  container.innerHTML =
+  studentApplications.innerHTML =
     applications
-      .slice()
-      .reverse()
       .map(
-        application =>
-          createStudentApplicationCard(
-            application
+        app =>
+          createApplicationCard(
+            app,
+            false
           )
       )
       .join("");
@@ -741,125 +1077,31 @@ function renderStudentApplications(
 
 
 /* ==================================================
-   生徒：申請カード
+   教員：全申請取得
 ================================================== */
 
-function createStudentApplicationCard(
-  application
-) {
-
-  const status =
-    application.status || "未確認";
-
-
-  return `
-
-    <div class="application-card">
-
-      <div class="application-top">
-
-        <div>
-
-          <div class="application-number">
-
-            ${escapeHtml(
-              application.applicationNumber
-            )}
-
-          </div>
-
-          <small>
-
-            申請日時：
-            ${escapeHtml(
-              application.timestamp
-            )}
-
-          </small>
-
-        </div>
-
-        <span class="status status-${escapeHtml(status)}">
-
-          ${escapeHtml(status)}
-
-        </span>
-
-      </div>
-
-
-      <div class="application-info">
-
-        <div class="info-item">
-          <span>遠征日：</span>
-          ${escapeHtml(
-            application.tripDate
-          )}
-        </div>
-
-        <div class="info-item">
-          <span>遠征先：</span>
-          ${escapeHtml(
-            application.destination
-          )}
-        </div>
-
-        <div class="info-item">
-          <span>大会：</span>
-          ${escapeHtml(
-            application.eventName
-          )}
-        </div>
-
-        <div class="info-item">
-          <span>出発地：</span>
-          ${escapeHtml(
-            application.departure
-          )}
-        </div>
-
-        <div class="info-item">
-          <span>到着地：</span>
-          ${escapeHtml(
-            application.arrival
-          )}
-        </div>
-
-        <div class="info-item">
-          <span>合計：</span>
-          ¥${Number(
-            application.totalAmount || 0
-          ).toLocaleString()}
-
-        </div>
-
-      </div>
-
-    </div>
-
-  `;
-
-}
-
-
-/* ==================================================
-   教員：全申請
-================================================== */
-
-async function loadAllApplications() {
+async function loadTeacherApplications() {
 
   if (!currentUser) {
     return;
   }
 
 
-  const container =
-    document.getElementById(
-      "teacherApplications"
-    );
+  if (
+    currentUser.role !== "教員"
+  ) {
+
+    return;
+
+  }
 
 
-  container.innerHTML =
+  if (!teacherApplications) {
+    return;
+  }
+
+
+  teacherApplications.innerHTML =
     `<div class="loading">
       読み込み中...
     </div>`;
@@ -879,24 +1121,18 @@ async function loadAllApplications() {
       });
 
 
-    if (!result.success) {
-
-      throw new Error(
-        result.message
-      );
-
-    }
-
-
     renderTeacherApplications(
-      result.applications
+      result.applications || []
     );
 
 
   } catch (error) {
 
-    container.innerHTML =
-      `<div class="empty">
+    console.error(error);
+
+
+    teacherApplications.innerHTML =
+      `<div class="message error-message">
         ${escapeHtml(
           error.message
         )}
@@ -915,20 +1151,14 @@ function renderTeacherApplications(
   applications
 ) {
 
-  const container =
-    document.getElementById(
-      "teacherApplications"
-    );
-
-
   if (
     !applications ||
     applications.length === 0
   ) {
 
-    container.innerHTML =
-      `<div class="empty">
-        現在、申請はありません。
+    teacherApplications.innerHTML =
+      `<div class="empty-message">
+        申請はありません。
       </div>`;
 
     return;
@@ -936,14 +1166,13 @@ function renderTeacherApplications(
   }
 
 
-  container.innerHTML =
+  teacherApplications.innerHTML =
     applications
-      .slice()
-      .reverse()
       .map(
-        application =>
-          createTeacherApplicationCard(
-            application
+        app =>
+          createApplicationCard(
+            app,
+            true
           )
       )
       .join("");
@@ -952,195 +1181,239 @@ function renderTeacherApplications(
 
 
 /* ==================================================
-   教員：申請カード
+   申請カード生成
 ================================================== */
 
-function createTeacherApplicationCard(
-  application
+function createApplicationCard(
+  app,
+  isTeacher
 ) {
 
   const status =
-    application.status || "未確認";
+    app.status ||
+    "未確認";
 
 
-  const statuses = [
-
-    "未確認",
-    "確認中",
-    "承認",
-    "差し戻し",
-    "支払済"
-
-  ];
+  const statusClass =
+    `status-${status}`;
 
 
-  const options =
-    statuses
-      .map(
-        item => `
-
-          <option
-            value="${escapeHtml(item)}"
-            ${
-              item === status
-                ? "selected"
-                : ""
-            }
-          >
-            ${escapeHtml(item)}
-          </option>
-
-        `
-      )
-      .join("");
+  const viaHtml =
+    app.viaPoints
+      ? `
+        <p>
+          <strong>経由地：</strong>
+          ${escapeHtml(
+            app.viaPoints
+          )}
+        </p>
+      `
+      : "";
 
 
-  return `
-
-    <div class="application-card">
-
-      <div class="application-top">
-
-        <div>
-
-          <div class="application-number">
-
-            ${escapeHtml(
-              application.applicationNumber
-            )}
-
-          </div>
-
-          <small>
-
-            ${escapeHtml(
-              application.timestamp
-            )}
-
-          </small>
-
-        </div>
-
-
-        <div class="teacher-status">
+  const teacherStatusHtml =
+    isTeacher
+      ? `
+        <p>
+          <strong>ステータス：</strong>
 
           <select
+            class="status-select"
             onchange="
               changeStatus(
                 '${escapeHtml(
-                  application.applicationNumber
+                  app.applicationNumber
                 )}',
                 this.value
               )
             "
           >
 
-            ${options}
+            <option
+              value="未確認"
+              ${status === "未確認" ? "selected" : ""}
+            >
+              未確認
+            </option>
+
+            <option
+              value="確認中"
+              ${status === "確認中" ? "selected" : ""}
+            >
+              確認中
+            </option>
+
+            <option
+              value="承認"
+              ${status === "承認" ? "selected" : ""}
+            >
+              承認
+            </option>
+
+            <option
+              value="差し戻し"
+              ${status === "差し戻し" ? "selected" : ""}
+            >
+              差し戻し
+            </option>
+
+            <option
+              value="支払済"
+              ${status === "支払済" ? "selected" : ""}
+            >
+              支払済
+            </option>
 
           </select>
+        </p>
+      `
+      : `
+        <p>
+          <strong>ステータス：</strong>
 
-        </div>
+          <span
+            class="status ${statusClass}"
+          >
+            ${escapeHtml(
+              status
+            )}
+          </span>
+        </p>
+      `;
+
+
+  return `
+    <div class="
+      application-card
+      ${isTeacher
+        ? "teacher-application"
+        : ""}
+    ">
+
+      <div class="application-header">
+
+        <span class="application-number">
+          ${escapeHtml(
+            app.applicationNumber
+          )}
+        </span>
+
+        <span class="application-date">
+          ${escapeHtml(
+            app.tripDate || ""
+          )}
+        </span>
 
       </div>
 
 
       <div class="application-info">
 
-        <div class="info-item">
-          <span>氏名：</span>
-          ${escapeHtml(
-            application.name
-          )}
-        </div>
+        ${
+          isTeacher
+            ? `
+              <p>
+                <strong>申請者：</strong>
+                ${escapeHtml(
+                  app.name || ""
+                )}
+              </p>
 
-        <div class="info-item">
-          <span>学年：</span>
-          ${escapeHtml(
-            application.grade
-          )}
-        </div>
+              <p>
+                <strong>学年：</strong>
+                ${escapeHtml(
+                  app.grade || ""
+                )}
+              </p>
 
-        <div class="info-item">
-          <span>クラス：</span>
-          ${escapeHtml(
-            application.className
-          )}
-        </div>
+              <p>
+                <strong>クラス：</strong>
+                ${escapeHtml(
+                  app.className || ""
+                )}
+              </p>
+            `
+            : ""
+        }
 
-        <div class="info-item">
-          <span>申請者ID：</span>
-          ${escapeHtml(
-            application.userId
-          )}
-        </div>
 
-        <div class="info-item">
-          <span>遠征日：</span>
+        <p>
+          <strong>遠征先：</strong>
           ${escapeHtml(
-            application.tripDate
+            app.destination || ""
           )}
-        </div>
+        </p>
 
-        <div class="info-item">
-          <span>遠征先：</span>
+
+        <p>
+          <strong>大会・イベント：</strong>
           ${escapeHtml(
-            application.destination
+            app.eventName || ""
           )}
-        </div>
+        </p>
 
-        <div class="info-item">
-          <span>大会：</span>
+
+        <p>
+          <strong>出発地：</strong>
           ${escapeHtml(
-            application.eventName
+            app.departure || ""
           )}
-        </div>
+        </p>
 
-        <div class="info-item">
-          <span>出発地：</span>
+
+        ${viaHtml}
+
+
+        <p>
+          <strong>到着地：</strong>
           ${escapeHtml(
-            application.departure
+            app.arrival || ""
           )}
-        </div>
+        </p>
 
-        <div class="info-item">
-          <span>到着地：</span>
-          ${escapeHtml(
-            application.arrival
-          )}
-        </div>
 
-        <div class="info-item">
-          <span>交通費：</span>
+        <p>
+          <strong>交通費：</strong>
           ¥${Number(
-            application.transportCost || 0
+            app.transportCost || 0
           ).toLocaleString()}
-        </div>
+        </p>
 
-        <div class="info-item">
-          <span>合計金額：</span>
+
+        <p>
+          <strong>合計金額：</strong>
           ¥${Number(
-            application.totalAmount || 0
+            app.totalAmount || 0
           ).toLocaleString()}
-        </div>
+        </p>
 
-        <div class="info-item">
-          <span>備考：</span>
-          ${escapeHtml(
-            application.note || "なし"
-          )}
-        </div>
+
+        ${
+          app.note
+            ? `
+              <p>
+                <strong>備考：</strong>
+                ${escapeHtml(
+                  app.note
+                )}
+              </p>
+            `
+            : ""
+        }
+
+
+        ${teacherStatusHtml}
 
       </div>
 
     </div>
-
   `;
 
 }
 
 
 /* ==================================================
-   教員：ステータス変更
+   ステータス変更
 ================================================== */
 
 async function changeStatus(
@@ -1158,7 +1431,7 @@ async function changeStatus(
   ) {
 
     alert(
-      "教員権限が必要です。"
+      "教員のみ変更できます。"
     );
 
     return;
@@ -1168,43 +1441,38 @@ async function changeStatus(
 
   try {
 
-    const result =
-      await apiRequest({
+    await apiRequest({
 
-        action:
-          "updateStatus",
+      action:
+        "updateStatus",
 
-        userId:
-          currentUser.id,
+      userId:
+        currentUser.id,
 
-        applicationNumber:
-          applicationNumber,
+      applicationNumber:
+        applicationNumber,
 
-        status:
-          status
+      status:
+        status
 
-      });
-
-
-    if (!result.success) {
-
-      throw new Error(
-        result.message
-      );
-
-    }
+    });
 
 
-    await loadAllApplications();
+    await loadTeacherApplications();
 
 
   } catch (error) {
 
+    console.error(error);
+
+
     alert(
-      error.message
+      error.message ||
+      "ステータス変更に失敗しました。"
     );
 
-    await loadAllApplications();
+
+    await loadTeacherApplications();
 
   }
 
@@ -1229,14 +1497,29 @@ function escapeHtml(value) {
 
   return String(value)
 
-    .replaceAll("&", "&amp;")
+    .replace(
+      /&/g,
+      "&amp;"
+    )
 
-    .replaceAll("<", "&lt;")
+    .replace(
+      /</g,
+      "&lt;"
+    )
 
-    .replaceAll(">", "&gt;")
+    .replace(
+      />/g,
+      "&gt;"
+    )
 
-    .replaceAll('"', "&quot;")
+    .replace(
+      /"/g,
+      "&quot;"
+    )
 
-    .replaceAll("'", "&#039;");
+    .replace(
+      /'/g,
+      "&#039;"
+    );
 
 }
