@@ -8,796 +8,625 @@
 
 body {
   margin: 0;
-
   font-family:
-    "Noto Sans JP",
-    "Yu Gothic",
-    "Hiragino Kaku Gothic ProN",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
     sans-serif;
 
   background: #f4f7fb;
-
   color: #172033;
-
-  line-height: 1.7;
 }
 
 
 /* ==================================================
-   Header
+   共通
+================================================== */
+
+.hidden {
+  display: none !important;
+}
+
+.container {
+  width: min(1100px, calc(100% - 32px));
+  margin: 40px auto 80px;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 30px;
+  margin-bottom: 24px;
+  box-shadow:
+    0 10px 30px rgba(24, 56, 100, 0.08);
+}
+
+
+/* ==================================================
+   ヘッダー
 ================================================== */
 
 .header {
-
   background:
     linear-gradient(
       135deg,
-      #07152f,
-      #0b2f68
+      #071a3a,
+      #0b4ea2
     );
 
   color: white;
-
-  padding: 28px 20px;
 }
 
 .header-inner {
-
-  max-width: 1000px;
-
+  width: min(1100px, calc(100% - 32px));
   margin: auto;
 
+  min-height: 100px;
+
   display: flex;
-
   align-items: center;
-
   justify-content: space-between;
-
-  gap: 20px;
 }
 
-.header-logo span {
-
-  display: block;
-
-  font-size: 12px;
-
-  font-weight: 700;
-
-  letter-spacing: 0.2em;
-
-  opacity: 0.7;
-}
-
-.header-logo h1 {
-
-  margin: 3px 0 0;
-
-  font-size: 28px;
-
-  font-weight: 800;
-}
-
-.header-label {
+.header-label,
+.small-label {
+  margin: 0 0 5px;
 
   font-size: 11px;
-
-  font-weight: 700;
-
-  letter-spacing: 0.15em;
-
-  opacity: 0.55;
-}
-
-
-/* ==================================================
-   Container
-================================================== */
-
-.container {
-
-  width:
-    min(
-      920px,
-      calc(100% - 30px)
-    );
-
-  margin: 50px auto 80px;
-}
-
-
-/* ==================================================
-   Intro
-================================================== */
-
-.intro {
-
-  margin-bottom: 35px;
-}
-
-.eyebrow {
-
-  margin: 0 0 6px;
-
-  color: #1d70e8;
-
-  font-size: 12px;
-
   font-weight: 800;
-
   letter-spacing: 0.15em;
+  opacity: 0.65;
 }
 
-.intro h2 {
-
+.header h1 {
   margin: 0;
-
-  font-size: 32px;
-
-  font-weight: 800;
-}
-
-.intro > p:last-child {
-
-  margin-top: 10px;
-
-  color: #6d7687;
+  font-size: 26px;
 }
 
 
 /* ==================================================
-   Card
+   ログイン
 ================================================== */
 
-.card {
+.login-card {
+  max-width: 480px;
+  margin: 60px auto;
+  text-align: center;
+}
 
-  background: white;
+.login-icon {
+  font-size: 48px;
+  margin-bottom: 15px;
+}
 
-  border:
-    1px solid #e4e9f1;
+.login-card h2 {
+  margin: 0 0 8px;
+}
 
-  border-radius: 16px;
-
-  padding: 30px;
-
-  margin-bottom: 22px;
-
-  box-shadow:
-    0 8px 30px
-    rgba(
-      20,
-      40,
-      80,
-      0.05
-    );
+.description {
+  color: #69758a;
+  font-size: 14px;
+  margin-bottom: 30px;
 }
 
 
 /* ==================================================
-   Card title
-================================================== */
-
-.card-title {
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 15px;
-
-  margin-bottom: 28px;
-}
-
-.card-title .number {
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  width: 42px;
-
-  height: 42px;
-
-  background: #eaf3ff;
-
-  color: #1268d8;
-
-  border-radius: 10px;
-
-  font-size: 13px;
-
-  font-weight: 800;
-}
-
-.card-title p {
-
-  margin: 0;
-
-  color: #9aa4b5;
-
-  font-size: 10px;
-
-  font-weight: 800;
-
-  letter-spacing: 0.15em;
-}
-
-.card-title h3 {
-
-  margin: 2px 0 0;
-
-  font-size: 19px;
-}
-
-
-/* ==================================================
-   Form
+   フォーム
 ================================================== */
 
 .form-grid {
-
   display: grid;
-
-  grid-template-columns:
-    repeat(
-      2,
-      minmax(0, 1fr)
-    );
-
-  gap: 22px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
 }
 
 .form-group {
-
-  min-width: 0;
+  margin-bottom: 20px;
 }
 
-.form-group.full {
-
-  grid-column: 1 / -1;
-}
-
-label {
-
+.form-group label {
   display: block;
-
   margin-bottom: 8px;
 
-  font-size: 13px;
-
+  font-size: 14px;
   font-weight: 700;
 }
 
 .required {
+  display: inline-block;
 
-  margin-left: 5px;
+  margin-left: 6px;
+  padding: 2px 6px;
 
-  color: #e04b4b;
+  border-radius: 5px;
+
+  background: #eaf2ff;
+  color: #1464d2;
 
   font-size: 10px;
-
-  font-weight: 700;
 }
 
-
-/* ==================================================
-   Input
-================================================== */
-
-input,
-select,
-textarea {
-
+.form-group input,
+.form-group select,
+.form-group textarea {
   width: 100%;
-
-  border:
-    1px solid #dce2eb;
-
-  border-radius: 9px;
-
-  background: #fbfcfe;
 
   padding: 13px 14px;
 
-  font-family: inherit;
+  border: 1px solid #d8e0eb;
+  border-radius: 10px;
 
-  font-size: 14px;
+  background: #fff;
 
   color: #172033;
 
+  font-size: 14px;
+
   outline: none;
 
-  transition:
-    border-color 0.2s,
-    box-shadow 0.2s,
-    background 0.2s;
+  transition: 0.2s;
 }
 
-input:focus,
-select:focus,
-textarea:focus {
-
-  background: white;
-
-  border-color: #2679e8;
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #1670e8;
 
   box-shadow:
-    0 0 0 3px
-    rgba(
-      38,
-      121,
-      232,
-      0.1
-    );
+    0 0 0 3px rgba(22, 112, 232, 0.1);
 }
 
-textarea {
-
+.form-group textarea {
   resize: vertical;
 }
 
 
 /* ==================================================
-   Money
+   金額
 ================================================== */
 
 .money-input {
-
-  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .money-input input {
-
-  padding-right: 45px;
+  flex: 1;
 }
 
 .money-input span {
-
-  position: absolute;
-
-  right: 14px;
-
-  top: 50%;
-
-  transform:
-    translateY(-50%);
-
-  color: #7b8493;
-
-  font-size: 13px;
+  font-weight: 700;
 }
 
 
 /* ==================================================
-   Total
+   合計
 ================================================== */
 
 .total-box {
-
   display: flex;
 
+  justify-content: space-between;
   align-items: center;
 
-  justify-content: space-between;
-
-  margin-top: 28px;
-
-  padding: 22px;
+  margin: 10px 0 25px;
+  padding: 20px;
 
   border-radius: 12px;
 
-  background:
-    linear-gradient(
-      135deg,
-      #07152f,
-      #0c397d
-    );
+  background: #eef5ff;
 
-  color: white;
+  color: #174c91;
 }
 
-.total-box p {
-
-  margin: 0;
-
-  font-size: 10px;
-
-  font-weight: 800;
-
-  letter-spacing: 0.15em;
-
-  opacity: 0.55;
+.total-box strong {
+  font-size: 26px;
 }
 
-.total-box span {
+
+/* ==================================================
+   確認
+================================================== */
+
+.confirm-box {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+
+  margin: 20px 0;
 
   font-size: 13px;
 }
 
-.total-price {
-
-  display: flex;
-
-  align-items: baseline;
-
-  gap: 5px;
-}
-
-.total-price strong {
-
-  font-size: 32px;
-}
-
-.total-price span {
-
-  opacity: 0.8;
+.confirm-box input {
+  width: 18px;
+  height: 18px;
 }
 
 
 /* ==================================================
-   Confirmation
+   ボタン
 ================================================== */
 
-.confirm-card {
-
-  padding: 20px 25px;
-}
-
-.checkbox-label {
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 10px;
-
-  margin: 0;
+.primary-button,
+.secondary-button,
+.logout-button {
+  border: 0;
+  border-radius: 10px;
 
   cursor: pointer;
+
+  font-weight: 700;
+
+  transition: 0.2s;
 }
 
-.checkbox-label input {
-
-  width: 18px;
-
-  height: 18px;
-
-  accent-color: #1670e8;
-}
-
-
-/* ==================================================
-   Submit
-================================================== */
-
-.submit-button {
-
+.primary-button {
   width: 100%;
 
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  gap: 15px;
-
-  padding: 17px;
-
-  border: none;
-
-  border-radius: 11px;
+  padding: 15px;
 
   background:
     linear-gradient(
       135deg,
-      #1268d8,
-      #2991ff
+      #1264d8,
+      #1590ff
     );
 
   color: white;
 
-  font-family: inherit;
-
   font-size: 15px;
 
-  font-weight: 800;
-
-  cursor: pointer;
-
   box-shadow:
-    0 10px 25px
-    rgba(
-      18,
-      104,
-      216,
-      0.2
-    );
-
-  transition:
-    transform 0.2s,
-    box-shadow 0.2s;
+    0 8px 18px rgba(18, 100, 216, 0.2);
 }
 
-.submit-button:hover {
-
-  transform:
-    translateY(-2px);
-
-  box-shadow:
-    0 14px 30px
-    rgba(
-      18,
-      104,
-      216,
-      0.28
-    );
+.primary-button:hover {
+  transform: translateY(-1px);
 }
 
-.submit-button:disabled {
+.secondary-button {
+  padding: 10px 16px;
 
-  opacity: 0.6;
-
-  cursor: not-allowed;
-
-  transform: none;
+  background: #eef4fc;
+  color: #1264d8;
 }
 
-.arrow {
+.logout-button {
+  padding: 10px 16px;
 
-  font-size: 20px;
-}
+  background: rgba(255,255,255,0.12);
+  color: white;
 
-.form-note {
-
-  text-align: center;
-
-  margin-top: 12px;
-
-  color: #8993a3;
-
-  font-size: 11px;
+  border: 1px solid rgba(255,255,255,0.2);
 }
 
 
 /* ==================================================
-   Success
+   ウェルカム
 ================================================== */
 
-.success-screen {
+.welcome-card {
+  display: flex;
+  align-items: center;
 
-  background: white;
+  margin-bottom: 24px;
+  padding: 25px;
 
-  border:
-    1px solid #e4e9f1;
+  border-radius: 16px;
 
-  border-radius: 18px;
-
-  padding: 55px 30px;
-
-  text-align: center;
-
-  box-shadow:
-    0 10px 40px
-    rgba(
-      20,
-      40,
-      80,
-      0.06
+  background:
+    linear-gradient(
+      135deg,
+      #eaf4ff,
+      #f7fbff
     );
 }
 
-.success-icon {
+.welcome-card.teacher {
+  background:
+    linear-gradient(
+      135deg,
+      #e9f0ff,
+      #f7f9ff
+    );
+}
 
-  width: 65px;
+.welcome-card h2 {
+  margin: 0 0 6px;
+}
 
-  height: 65px;
+.welcome-card p:last-child {
+  margin: 0;
 
-  margin: 0 auto 20px;
+  color: #68758a;
+}
 
+
+/* ==================================================
+   セクションタイトル
+================================================== */
+
+.section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 25px;
+}
+
+.section-title h2 {
+  margin: 0;
+}
+
+
+/* ==================================================
+   申請カード
+================================================== */
+
+.application-card {
+  padding: 20px;
+
+  border: 1px solid #e2e8f1;
+  border-radius: 14px;
+
+  margin-bottom: 15px;
+}
+
+.application-top {
   display: flex;
 
   align-items: center;
+  justify-content: space-between;
 
-  justify-content: center;
+  gap: 15px;
 
-  border-radius: 50%;
+  margin-bottom: 15px;
+}
 
-  background: #e9f8ef;
+.application-number {
+  font-weight: 800;
+  color: #155fc6;
+}
 
-  color: #27a75c;
+.application-info {
+  display: grid;
 
-  font-size: 30px;
+  grid-template-columns:
+    repeat(2, 1fr);
 
+  gap: 8px 20px;
+
+  margin-bottom: 15px;
+}
+
+.info-item {
+  font-size: 13px;
+}
+
+.info-item span {
+  color: #7b8799;
+  margin-right: 5px;
+}
+
+
+/* ==================================================
+   ステータス
+================================================== */
+
+.status {
+  display: inline-block;
+
+  padding: 6px 11px;
+
+  border-radius: 999px;
+
+  background: #eef2f7;
+
+  font-size: 12px;
   font-weight: 800;
 }
 
-.success-screen h2 {
-
-  margin: 0 0 10px;
-
-  font-size: 28px;
+.status-未確認 {
+  background: #fff4d6;
+  color: #9a6900;
 }
 
-.success-screen > p:not(.eyebrow) {
-
-  color: #737d8d;
+.status-確認中 {
+  background: #e6f2ff;
+  color: #1766b3;
 }
 
-.application-number-box {
-
-  max-width: 400px;
-
-  margin: 30px auto;
-
-  padding: 20px;
-
-  background: #f5f8fc;
-
-  border-radius: 10px;
+.status-承認 {
+  background: #e5f8ec;
+  color: #15803d;
 }
 
-.application-number-box span {
-
-  display: block;
-
-  margin-bottom: 5px;
-
-  color: #8993a3;
-
-  font-size: 10px;
-
-  font-weight: 800;
-
-  letter-spacing: 0.12em;
+.status-差し戻し {
+  background: #ffe8e8;
+  color: #c53030;
 }
 
-.application-number-box strong {
-
-  color: #1268d8;
-
-  font-size: 20px;
-
-  letter-spacing: 0.08em;
+.status-支払済 {
+  background: #e8e8ff;
+  color: #4a45a0;
 }
 
-.secondary-button {
 
-  padding: 12px 25px;
+/* ==================================================
+   教員用
+================================================== */
+
+.teacher-status {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.teacher-status select {
+  padding: 8px 10px;
 
   border:
-    1px solid #d7dfeb;
+    1px solid #d8e0eb;
 
   border-radius: 8px;
 
   background: white;
-
-  color: #172033;
-
-  font-family: inherit;
-
-  font-weight: 700;
-
-  cursor: pointer;
 }
 
 
 /* ==================================================
-   Footer
+   成功画面
 ================================================== */
 
-.footer {
+.success-screen {
+  max-width: 600px;
+  margin: 60px auto;
+  text-align: center;
+}
 
-  padding: 30px 20px;
+.success-icon {
+  width: 70px;
+  height: 70px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: 0 auto 20px;
+
+  border-radius: 50%;
+
+  background: #e5f8ec;
+
+  color: #15803d;
+
+  font-size: 36px;
+  font-weight: 900;
+}
+
+.application-number {
+  margin: 25px 0;
+  padding: 20px;
+
+  border-radius: 12px;
+
+  background: #f3f7fc;
+}
+
+.application-number span {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: #718096;
+
+  font-size: 12px;
+}
+
+.application-number strong {
+  font-size: 22px;
+}
+
+
+/* ==================================================
+   メッセージ
+================================================== */
+
+.message {
+  min-height: 20px;
+
+  margin-top: 15px;
+
+  color: #d14343;
+
+  font-size: 13px;
+}
+
+.loading {
+  padding: 30px;
 
   text-align: center;
 
-  background: #07152f;
-
-  color: white;
+  color: #7b8799;
 }
 
-.footer p {
+.empty {
+  padding: 30px;
 
-  margin: 0;
+  text-align: center;
 
-  font-size: 12px;
-
-  font-weight: 800;
-
-  letter-spacing: 0.15em;
-}
-
-.footer span {
-
-  display: block;
-
-  margin-top: 5px;
-
-  font-size: 9px;
-
-  opacity: 0.4;
-
-  letter-spacing: 0.15em;
+  color: #7b8799;
 }
 
 
 /* ==================================================
-   Mobile
+   フッター
+================================================== */
+
+.footer {
+  padding: 30px;
+
+  text-align: center;
+
+  color: #8b96a8;
+
+  font-size: 12px;
+}
+
+.footer p {
+  margin: 4px;
+}
+
+
+/* ==================================================
+   スマホ
 ================================================== */
 
 @media (max-width: 650px) {
 
-  .header {
+  .container {
+    width: min(100% - 20px, 1100px);
 
-    padding: 22px 15px;
+    margin-top: 20px;
   }
 
   .header-inner {
-
-    align-items: flex-start;
+    min-height: 85px;
   }
 
-  .header-logo h1 {
-
-    font-size: 23px;
-  }
-
-  .header-label {
-
-    display: none;
-  }
-
-  .container {
-
-    width:
-      min(
-        100% - 20px,
-        920px
-      );
-
-    margin-top: 30px;
-  }
-
-  .intro h2 {
-
-    font-size: 26px;
-  }
-
-  .card {
-
-    padding: 22px 18px;
+  .header h1 {
+    font-size: 20px;
   }
 
   .form-grid {
-
     grid-template-columns: 1fr;
-
-    gap: 18px;
+    gap: 0;
   }
 
-  .form-group.full {
-
-    grid-column: auto;
+  .card {
+    padding: 20px;
+    border-radius: 14px;
   }
 
-  .total-box {
-
-    padding: 18px;
-
-    align-items: flex-end;
+  .application-info {
+    grid-template-columns: 1fr;
   }
 
-  .total-price strong {
-
-    font-size: 26px;
+  .application-top {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
-  .success-screen {
+  .section-title {
+    align-items: flex-start;
+    gap: 15px;
+  }
 
-    padding: 45px 20px;
+  .teacher-status {
+    flex-direction: column;
+    align-items: stretch;
   }
 
 }
