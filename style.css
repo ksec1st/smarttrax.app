@@ -8,6 +8,7 @@
 
 body {
   margin: 0;
+
   font-family:
     "Noto Sans JP",
     "Yu Gothic",
@@ -15,7 +16,9 @@ body {
     sans-serif;
 
   background: #f4f7fb;
+
   color: #172033;
+
   line-height: 1.7;
 }
 
@@ -25,6 +28,7 @@ body {
 ================================================== */
 
 .header {
+
   background:
     linear-gradient(
       135deg,
@@ -33,41 +37,55 @@ body {
     );
 
   color: white;
+
   padding: 28px 20px;
 }
 
 .header-inner {
+
   max-width: 1000px;
+
   margin: auto;
 
   display: flex;
+
   align-items: center;
+
   justify-content: space-between;
+
   gap: 20px;
 }
 
 .header-logo span {
+
   display: block;
 
   font-size: 12px;
+
   font-weight: 700;
+
   letter-spacing: 0.2em;
 
   opacity: 0.7;
 }
 
 .header-logo h1 {
+
   margin: 3px 0 0;
 
   font-size: 28px;
+
   font-weight: 800;
 }
 
 .header-label {
+
   font-size: 11px;
+
   font-weight: 700;
 
   letter-spacing: 0.15em;
+
   opacity: 0.55;
 }
 
@@ -77,7 +95,13 @@ body {
 ================================================== */
 
 .container {
-  width: min(920px, calc(100% - 30px));
+
+  width:
+    min(
+      920px,
+      calc(100% - 30px)
+    );
+
   margin: 50px auto 80px;
 }
 
@@ -87,27 +111,34 @@ body {
 ================================================== */
 
 .intro {
+
   margin-bottom: 35px;
 }
 
 .eyebrow {
+
   margin: 0 0 6px;
 
   color: #1d70e8;
 
   font-size: 12px;
+
   font-weight: 800;
+
   letter-spacing: 0.15em;
 }
 
 .intro h2 {
+
   margin: 0;
 
   font-size: 32px;
+
   font-weight: 800;
 }
 
 .intro > p:last-child {
+
   margin-top: 10px;
 
   color: #6d7687;
@@ -119,16 +150,26 @@ body {
 ================================================== */
 
 .card {
+
   background: white;
 
-  border: 1px solid #e4e9f1;
+  border:
+    1px solid #e4e9f1;
+
   border-radius: 16px;
 
   padding: 30px;
+
   margin-bottom: 22px;
 
   box-shadow:
-    0 8px 30px rgba(20, 40, 80, 0.05);
+    0 8px 30px
+    rgba(
+      20,
+      40,
+      80,
+      0.05
+    );
 }
 
 
@@ -137,7 +178,9 @@ body {
 ================================================== */
 
 .card-title {
+
   display: flex;
+
   align-items: center;
 
   gap: 15px;
@@ -146,34 +189,43 @@ body {
 }
 
 .card-title .number {
+
   display: flex;
+
   align-items: center;
+
   justify-content: center;
 
   width: 42px;
+
   height: 42px;
 
   background: #eaf3ff;
+
   color: #1268d8;
 
   border-radius: 10px;
 
   font-size: 13px;
+
   font-weight: 800;
 }
 
 .card-title p {
+
   margin: 0;
 
   color: #9aa4b5;
 
   font-size: 10px;
+
   font-weight: 800;
 
   letter-spacing: 0.15em;
 }
 
 .card-title h3 {
+
   margin: 2px 0 0;
 
   font-size: 19px;
@@ -185,37 +237,47 @@ body {
 ================================================== */
 
 .form-grid {
+
   display: grid;
 
   grid-template-columns:
-    repeat(2, minmax(0, 1fr));
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
 
   gap: 22px;
 }
 
 .form-group {
+
   min-width: 0;
 }
 
 .form-group.full {
+
   grid-column: 1 / -1;
 }
 
 label {
+
   display: block;
 
   margin-bottom: 8px;
 
   font-size: 13px;
+
   font-weight: 700;
 }
 
 .required {
+
   margin-left: 5px;
 
   color: #e04b4b;
 
   font-size: 10px;
+
   font-weight: 700;
 }
 
@@ -227,9 +289,12 @@ label {
 input,
 select,
 textarea {
+
   width: 100%;
 
-  border: 1px solid #dce2eb;
+  border:
+    1px solid #dce2eb;
+
   border-radius: 9px;
 
   background: #fbfcfe;
@@ -237,7 +302,9 @@ textarea {
   padding: 13px 14px;
 
   font-family: inherit;
+
   font-size: 14px;
+
   color: #172033;
 
   outline: none;
@@ -251,15 +318,23 @@ textarea {
 input:focus,
 select:focus,
 textarea:focus {
+
   background: white;
 
   border-color: #2679e8;
 
   box-shadow:
-    0 0 0 3px rgba(38, 121, 232, 0.1);
+    0 0 0 3px
+    rgba(
+      38,
+      121,
+      232,
+      0.1
+    );
 }
 
 textarea {
+
   resize: vertical;
 }
 
@@ -269,20 +344,25 @@ textarea {
 ================================================== */
 
 .money-input {
+
   position: relative;
 }
 
 .money-input input {
+
   padding-right: 45px;
 }
 
 .money-input span {
+
   position: absolute;
 
   right: 14px;
+
   top: 50%;
 
-  transform: translateY(-50%);
+  transform:
+    translateY(-50%);
 
   color: #7b8493;
 
@@ -295,11 +375,15 @@ textarea {
 ================================================== */
 
 .total-box {
+
   display: flex;
+
   align-items: center;
+
   justify-content: space-between;
 
   margin-top: 28px;
+
   padding: 22px;
 
   border-radius: 12px;
@@ -315,9 +399,11 @@ textarea {
 }
 
 .total-box p {
+
   margin: 0;
 
   font-size: 10px;
+
   font-weight: 800;
 
   letter-spacing: 0.15em;
@@ -326,20 +412,26 @@ textarea {
 }
 
 .total-box span {
+
   font-size: 13px;
 }
 
 .total-price {
+
   display: flex;
+
   align-items: baseline;
+
   gap: 5px;
 }
 
 .total-price strong {
+
   font-size: 32px;
 }
 
 .total-price span {
+
   opacity: 0.8;
 }
 
@@ -349,11 +441,14 @@ textarea {
 ================================================== */
 
 .confirm-card {
+
   padding: 20px 25px;
 }
 
 .checkbox-label {
+
   display: flex;
+
   align-items: center;
 
   gap: 10px;
@@ -364,7 +459,9 @@ textarea {
 }
 
 .checkbox-label input {
+
   width: 18px;
+
   height: 18px;
 
   accent-color: #1670e8;
@@ -376,10 +473,13 @@ textarea {
 ================================================== */
 
 .submit-button {
+
   width: 100%;
 
   display: flex;
+
   align-items: center;
+
   justify-content: center;
 
   gap: 15px;
@@ -387,6 +487,7 @@ textarea {
   padding: 17px;
 
   border: none;
+
   border-radius: 11px;
 
   background:
@@ -399,13 +500,21 @@ textarea {
   color: white;
 
   font-family: inherit;
+
   font-size: 15px;
+
   font-weight: 800;
 
   cursor: pointer;
 
   box-shadow:
-    0 10px 25px rgba(18, 104, 216, 0.2);
+    0 10px 25px
+    rgba(
+      18,
+      104,
+      216,
+      0.2
+    );
 
   transition:
     transform 0.2s,
@@ -413,23 +522,36 @@ textarea {
 }
 
 .submit-button:hover {
-  transform: translateY(-2px);
+
+  transform:
+    translateY(-2px);
 
   box-shadow:
-    0 14px 30px rgba(18, 104, 216, 0.28);
+    0 14px 30px
+    rgba(
+      18,
+      104,
+      216,
+      0.28
+    );
 }
 
 .submit-button:disabled {
+
   opacity: 0.6;
+
   cursor: not-allowed;
+
   transform: none;
 }
 
 .arrow {
+
   font-size: 20px;
 }
 
 .form-note {
+
   text-align: center;
 
   margin-top: 12px;
@@ -445,9 +567,12 @@ textarea {
 ================================================== */
 
 .success-screen {
+
   background: white;
 
-  border: 1px solid #e4e9f1;
+  border:
+    1px solid #e4e9f1;
+
   border-radius: 18px;
 
   padding: 55px 30px;
@@ -455,39 +580,54 @@ textarea {
   text-align: center;
 
   box-shadow:
-    0 10px 40px rgba(20, 40, 80, 0.06);
+    0 10px 40px
+    rgba(
+      20,
+      40,
+      80,
+      0.06
+    );
 }
 
 .success-icon {
+
   width: 65px;
+
   height: 65px;
 
   margin: 0 auto 20px;
 
   display: flex;
+
   align-items: center;
+
   justify-content: center;
 
   border-radius: 50%;
 
   background: #e9f8ef;
+
   color: #27a75c;
 
   font-size: 30px;
+
   font-weight: 800;
 }
 
 .success-screen h2 {
+
   margin: 0 0 10px;
 
   font-size: 28px;
 }
 
 .success-screen > p:not(.eyebrow) {
+
   color: #737d8d;
 }
 
 .application-number-box {
+
   max-width: 400px;
 
   margin: 30px auto;
@@ -500,6 +640,7 @@ textarea {
 }
 
 .application-number-box span {
+
   display: block;
 
   margin-bottom: 5px;
@@ -507,22 +648,28 @@ textarea {
   color: #8993a3;
 
   font-size: 10px;
+
   font-weight: 800;
 
   letter-spacing: 0.12em;
 }
 
 .application-number-box strong {
+
   color: #1268d8;
 
   font-size: 20px;
+
   letter-spacing: 0.08em;
 }
 
 .secondary-button {
+
   padding: 12px 25px;
 
-  border: 1px solid #d7dfeb;
+  border:
+    1px solid #d7dfeb;
+
   border-radius: 8px;
 
   background: white;
@@ -530,6 +677,7 @@ textarea {
   color: #172033;
 
   font-family: inherit;
+
   font-weight: 700;
 
   cursor: pointer;
@@ -541,23 +689,29 @@ textarea {
 ================================================== */
 
 .footer {
+
   padding: 30px 20px;
 
   text-align: center;
 
   background: #07152f;
+
   color: white;
 }
 
 .footer p {
+
   margin: 0;
 
   font-size: 12px;
+
   font-weight: 800;
+
   letter-spacing: 0.15em;
 }
 
 .footer span {
+
   display: block;
 
   margin-top: 5px;
@@ -565,6 +719,7 @@ textarea {
   font-size: 9px;
 
   opacity: 0.4;
+
   letter-spacing: 0.15em;
 }
 
@@ -576,55 +731,72 @@ textarea {
 @media (max-width: 650px) {
 
   .header {
+
     padding: 22px 15px;
   }
 
   .header-inner {
+
     align-items: flex-start;
   }
 
   .header-logo h1 {
+
     font-size: 23px;
   }
 
   .header-label {
+
     display: none;
   }
 
   .container {
-    width: min(100% - 20px, 920px);
+
+    width:
+      min(
+        100% - 20px,
+        920px
+      );
 
     margin-top: 30px;
   }
 
   .intro h2 {
+
     font-size: 26px;
   }
 
   .card {
+
     padding: 22px 18px;
   }
 
   .form-grid {
+
     grid-template-columns: 1fr;
+
     gap: 18px;
   }
 
   .form-group.full {
+
     grid-column: auto;
   }
 
   .total-box {
+
     padding: 18px;
 
     align-items: flex-end;
   }
 
   .total-price strong {
+
     font-size: 26px;
   }
 
   .success-screen {
+
     padding: 45px 20px;
   }
 
