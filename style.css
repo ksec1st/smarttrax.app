@@ -6,39 +6,36 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
   font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
+    "Noto Sans JP",
+    "Yu Gothic",
+    YuGothic,
     sans-serif;
 
   background: #f4f7fb;
-  color: #172033;
+  color: #1e293b;
+  line-height: 1.7;
 }
 
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
 
-/* ==================================================
-   共通
-================================================== */
+button {
+  cursor: pointer;
+}
 
 .hidden {
   display: none !important;
-}
-
-.container {
-  width: min(1100px, calc(100% - 32px));
-  margin: 40px auto 80px;
-}
-
-.card {
-  background: #ffffff;
-  border-radius: 18px;
-  padding: 30px;
-  margin-bottom: 24px;
-  box-shadow:
-    0 10px 30px rgba(24, 56, 100, 0.08);
 }
 
 
@@ -47,40 +44,92 @@ body {
 ================================================== */
 
 .header {
-  background:
-    linear-gradient(
-      135deg,
-      #071a3a,
-      #0b4ea2
-    );
-
-  color: white;
+  background: #0f172a;
+  color: #fff;
+  padding: 18px 20px;
 }
 
 .header-inner {
-  width: min(1100px, calc(100% - 32px));
-  margin: auto;
-
-  min-height: 100px;
+  max-width: 1000px;
+  margin: 0 auto;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 20px;
 }
 
-.header-label,
-.small-label {
-  margin: 0 0 5px;
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 
-  font-size: 11px;
+.logo-mark {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #2563eb;
+  border-radius: 10px;
+
+  font-size: 20px;
   font-weight: 800;
-  letter-spacing: 0.15em;
-  opacity: 0.65;
 }
 
-.header h1 {
+.logo-text {
   margin: 0;
-  font-size: 26px;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.logo-sub {
+  margin: 0;
+  font-size: 11px;
+  color: #94a3b8;
+  letter-spacing: 1px;
+}
+
+
+/* ==================================================
+   メイン
+================================================== */
+
+main {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 40px 20px 60px;
+}
+
+
+/* ==================================================
+   カード
+================================================== */
+
+.card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 30px;
+
+  box-shadow:
+    0 10px 30px rgba(15, 23, 42, 0.07);
+
+  margin-bottom: 24px;
+}
+
+.card-title {
+  margin: 0 0 6px;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.card-description {
+  margin: 0 0 25px;
+  color: #64748b;
+  font-size: 14px;
 }
 
 
@@ -88,25 +137,42 @@ body {
    ログイン
 ================================================== */
 
-.login-card {
-  max-width: 480px;
-  margin: 60px auto;
-  text-align: center;
+.login-wrapper {
+  max-width: 500px;
+  margin: 50px auto;
 }
 
 .login-icon {
-  font-size: 48px;
-  margin-bottom: 15px;
+  width: 70px;
+  height: 70px;
+
+  margin: 0 auto 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #eff6ff;
+  color: #2563eb;
+
+  border-radius: 18px;
+
+  font-size: 32px;
 }
 
-.login-card h2 {
+.login-title {
+  text-align: center;
   margin: 0 0 8px;
+
+  font-size: 28px;
+  font-weight: 800;
 }
 
-.description {
-  color: #69758a;
-  font-size: 14px;
-  margin-bottom: 30px;
+.login-description {
+  text-align: center;
+  margin: 0 0 30px;
+
+  color: #64748b;
 }
 
 
@@ -114,37 +180,54 @@ body {
    フォーム
 ================================================== */
 
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-}
-
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 22px;
 }
 
 .form-group label {
   display: block;
+
   margin-bottom: 8px;
 
   font-size: 14px;
   font-weight: 700;
+  color: #334155;
 }
 
 .required {
   display: inline-block;
 
   margin-left: 6px;
-  padding: 2px 6px;
+  padding: 2px 7px;
+
+  background: #ef4444;
+  color: #fff;
 
   border-radius: 5px;
 
-  background: #eaf2ff;
-  color: #1464d2;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.optional {
+  display: inline-block;
+
+  margin-left: 6px;
+  padding: 2px 7px;
+
+  background: #64748b;
+  color: #fff;
+
+  border-radius: 5px;
 
   font-size: 10px;
+  font-weight: 700;
 }
+
+
+/* ==================================================
+   入力欄
+================================================== */
 
 .form-group input,
 .form-group select,
@@ -153,31 +236,42 @@ body {
 
   padding: 13px 14px;
 
-  border: 1px solid #d8e0eb;
+  border: 1px solid #cbd5e1;
   border-radius: 10px;
 
   background: #fff;
-
-  color: #172033;
-
-  font-size: 14px;
+  color: #1e293b;
 
   outline: none;
 
-  transition: 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-  border-color: #1670e8;
+  border-color: #2563eb;
 
   box-shadow:
-    0 0 0 3px rgba(22, 112, 232, 0.1);
+    0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
 .form-group textarea {
+  min-height: 120px;
   resize: vertical;
+}
+
+
+/* ==================================================
+   フォーム2列
+================================================== */
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 20px;
 }
 
 
@@ -186,62 +280,92 @@ body {
 ================================================== */
 
 .money-input {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  position: relative;
 }
 
 .money-input input {
-  flex: 1;
+  padding-left: 40px;
 }
 
-.money-input span {
+.money-input::before {
+  content: "¥";
+
+  position: absolute;
+  left: 15px;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  color: #64748b;
   font-weight: 700;
+
+  pointer-events: none;
 }
 
 
 /* ==================================================
-   合計
+   合計金額
 ================================================== */
 
 .total-box {
-  display: flex;
+  margin: 25px 0;
 
-  justify-content: space-between;
-  align-items: center;
-
-  margin: 10px 0 25px;
   padding: 20px;
+
+  background: #eff6ff;
+
+  border: 1px solid #bfdbfe;
 
   border-radius: 12px;
 
-  background: #eef5ff;
-
-  color: #174c91;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
 }
 
-.total-box strong {
+.total-label {
+  font-weight: 700;
+  color: #334155;
+}
+
+.total-amount {
+  color: #2563eb;
+
   font-size: 26px;
+  font-weight: 800;
 }
 
 
 /* ==================================================
-   確認
+   確認チェック
 ================================================== */
 
 .confirm-box {
   display: flex;
+  align-items: flex-start;
   gap: 10px;
-  align-items: center;
 
-  margin: 20px 0;
+  margin: 25px 0;
+  padding: 15px;
 
-  font-size: 13px;
+  background: #f8fafc;
+
+  border-radius: 10px;
 }
 
 .confirm-box input {
   width: 18px;
   height: 18px;
+
+  margin-top: 4px;
+}
+
+.confirm-box label {
+  margin: 0;
+
+  font-size: 13px;
+  font-weight: 500;
 }
 
 
@@ -249,57 +373,81 @@ body {
    ボタン
 ================================================== */
 
-.primary-button,
-.secondary-button,
-.logout-button {
-  border: 0;
+.button {
+  width: 100%;
+
+  padding: 14px 20px;
+
+  border: none;
   border-radius: 10px;
 
-  cursor: pointer;
+  background: #2563eb;
+  color: #fff;
 
+  font-size: 15px;
+  font-weight: 700;
+
+  transition:
+    background 0.2s,
+    transform 0.2s;
+}
+
+.button:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+
+/* ==================================================
+   セカンダリボタン
+================================================== */
+
+.secondary-button {
+  width: 100%;
+
+  padding: 12px 16px;
+
+  border: 1px dashed #3b82f6;
+  border-radius: 10px;
+
+  background: transparent;
+  color: #2563eb;
+
+  font-size: 14px;
   font-weight: 700;
 
   transition: 0.2s;
 }
 
-.primary-button {
-  width: 100%;
-
-  padding: 15px;
-
-  background:
-    linear-gradient(
-      135deg,
-      #1264d8,
-      #1590ff
-    );
-
-  color: white;
-
-  font-size: 15px;
-
-  box-shadow:
-    0 8px 18px rgba(18, 100, 216, 0.2);
+.secondary-button:hover {
+  background: #eff6ff;
 }
 
-.primary-button:hover {
-  transform: translateY(-1px);
-}
 
-.secondary-button {
-  padding: 10px 16px;
-
-  background: #eef4fc;
-  color: #1264d8;
-}
+/* ==================================================
+   ログアウト
+================================================== */
 
 .logout-button {
-  padding: 10px 16px;
+  padding: 9px 14px;
 
-  background: rgba(255,255,255,0.12);
-  color: white;
+  border: 1px solid #475569;
+  border-radius: 8px;
 
-  border: 1px solid rgba(255,255,255,0.2);
+  background: transparent;
+  color: #fff;
+
+  font-size: 13px;
+}
+
+.logout-button:hover {
+  background: #1e293b;
 }
 
 
@@ -308,75 +456,104 @@ body {
 ================================================== */
 
 .welcome-card {
-  display: flex;
-  align-items: center;
-
-  margin-bottom: 24px;
   padding: 25px;
 
+  background:
+    linear-gradient(
+      135deg,
+      #eff6ff,
+      #ffffff
+    );
+
+  border: 1px solid #dbeafe;
+
   border-radius: 16px;
-
-  background:
-    linear-gradient(
-      135deg,
-      #eaf4ff,
-      #f7fbff
-    );
-}
-
-.welcome-card.teacher {
-  background:
-    linear-gradient(
-      135deg,
-      #e9f0ff,
-      #f7f9ff
-    );
-}
-
-.welcome-card h2 {
-  margin: 0 0 6px;
-}
-
-.welcome-card p:last-child {
-  margin: 0;
-
-  color: #68758a;
-}
-
-
-/* ==================================================
-   セクションタイトル
-================================================== */
-
-.section-title {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 
   margin-bottom: 25px;
 }
 
-.section-title h2 {
+.welcome-card h2 {
+  margin: 0 0 5px;
+
+  font-size: 22px;
+}
+
+.welcome-card p {
   margin: 0;
+
+  color: #64748b;
 }
 
 
 /* ==================================================
-   申請カード
+   経由地
 ================================================== */
+
+#viaPoints {
+  display: flex;
+  flex-direction: column;
+
+  gap: 10px;
+
+  margin-bottom: 12px;
+}
+
+.via-point {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+}
+
+.via-point input {
+  flex: 1;
+  min-width: 0;
+}
+
+.via-remove {
+  flex-shrink: 0;
+
+  padding: 10px 14px;
+
+  border: none;
+  border-radius: 8px;
+
+  background: #ef4444;
+  color: #fff;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  transition: 0.2s;
+}
+
+.via-remove:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+}
+
+
+/* ==================================================
+   申請一覧
+================================================== */
+
+.application-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
 
 .application-card {
   padding: 20px;
 
-  border: 1px solid #e2e8f1;
+  border: 1px solid #e2e8f0;
   border-radius: 14px;
 
-  margin-bottom: 15px;
+  background: #fff;
 }
 
-.application-top {
+.application-header {
   display: flex;
-
   align-items: center;
   justify-content: space-between;
 
@@ -386,28 +563,32 @@ body {
 }
 
 .application-number {
+  font-size: 14px;
   font-weight: 800;
-  color: #155fc6;
+  color: #2563eb;
+}
+
+.application-date {
+  font-size: 12px;
+  color: #94a3b8;
 }
 
 .application-info {
   display: grid;
 
-  grid-template-columns:
-    repeat(2, 1fr);
+  grid-template-columns: 1fr 1fr;
 
-  gap: 8px 20px;
-
-  margin-bottom: 15px;
+  gap: 10px 20px;
 }
 
-.info-item {
+.application-info p {
+  margin: 0;
+
   font-size: 13px;
 }
 
-.info-item span {
-  color: #7b8799;
-  margin-right: 5px;
+.application-info strong {
+  color: #475569;
 }
 
 
@@ -418,61 +599,62 @@ body {
 .status {
   display: inline-block;
 
-  padding: 6px 11px;
+  padding: 5px 10px;
 
   border-radius: 999px;
 
-  background: #eef2f7;
-
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
 }
 
 .status-未確認 {
-  background: #fff4d6;
-  color: #9a6900;
+  background: #f1f5f9;
+  color: #475569;
 }
 
 .status-確認中 {
-  background: #e6f2ff;
-  color: #1766b3;
+  background: #fef3c7;
+  color: #92400e;
 }
 
 .status-承認 {
-  background: #e5f8ec;
-  color: #15803d;
+  background: #dcfce7;
+  color: #166534;
 }
 
 .status-差し戻し {
-  background: #ffe8e8;
-  color: #c53030;
+  background: #fee2e2;
+  color: #991b1b;
 }
 
 .status-支払済 {
-  background: #e8e8ff;
-  color: #4a45a0;
+  background: #dbeafe;
+  color: #1e40af;
 }
 
 
 /* ==================================================
-   教員用
+   教員用ステータス変更
 ================================================== */
 
-.teacher-status {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
+.status-select {
+  padding: 7px 10px;
 
-.teacher-status select {
-  padding: 8px 10px;
-
-  border:
-    1px solid #d8e0eb;
-
+  border: 1px solid #cbd5e1;
   border-radius: 8px;
 
-  background: white;
+  background: #fff;
+
+  font-size: 12px;
+}
+
+
+/* ==================================================
+   教員一覧
+================================================== */
+
+.teacher-application {
+  border-left: 4px solid #2563eb;
 }
 
 
@@ -481,52 +663,62 @@ body {
 ================================================== */
 
 .success-screen {
-  max-width: 600px;
-  margin: 60px auto;
   text-align: center;
+
+  max-width: 600px;
+
+  margin: 60px auto;
 }
 
 .success-icon {
-  width: 70px;
-  height: 70px;
+  width: 80px;
+  height: 80px;
+
+  margin: 0 auto 20px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  margin: 0 auto 20px;
+  background: #dcfce7;
+  color: #16a34a;
 
   border-radius: 50%;
 
-  background: #e5f8ec;
-
-  color: #15803d;
-
-  font-size: 36px;
-  font-weight: 900;
+  font-size: 40px;
 }
 
-.application-number {
+.success-title {
+  margin: 0 0 10px;
+
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.application-number-box {
   margin: 25px 0;
+
   padding: 20px;
 
-  border-radius: 12px;
+  background: #f8fafc;
 
-  background: #f3f7fc;
+  border-radius: 12px;
 }
 
-.application-number span {
+.application-number-box span {
   display: block;
 
-  margin-bottom: 8px;
+  margin-bottom: 5px;
 
-  color: #718096;
+  color: #64748b;
 
-  font-size: 12px;
+  font-size: 13px;
 }
 
-.application-number strong {
-  font-size: 22px;
+.application-number-box strong {
+  color: #2563eb;
+
+  font-size: 24px;
 }
 
 
@@ -535,29 +727,46 @@ body {
 ================================================== */
 
 .message {
-  min-height: 20px;
-
-  margin-top: 15px;
-
-  color: #d14343;
+  margin-top: 12px;
 
   font-size: 13px;
 }
+
+.error-message {
+  color: #dc2626;
+}
+
+.success-message {
+  color: #16a34a;
+}
+
+
+/* ==================================================
+   空状態
+================================================== */
+
+.empty-message {
+  padding: 35px 20px;
+
+  text-align: center;
+
+  color: #94a3b8;
+
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+}
+
+
+/* ==================================================
+   ローディング
+================================================== */
 
 .loading {
   padding: 30px;
 
   text-align: center;
 
-  color: #7b8799;
-}
-
-.empty {
-  padding: 30px;
-
-  text-align: center;
-
-  color: #7b8799;
+  color: #64748b;
 }
 
 
@@ -566,67 +775,71 @@ body {
 ================================================== */
 
 .footer {
-  padding: 30px;
+  padding: 25px 20px;
 
   text-align: center;
 
-  color: #8b96a8;
+  color: #94a3b8;
 
   font-size: 12px;
 }
 
-.footer p {
-  margin: 4px;
-}
-
 
 /* ==================================================
-   スマホ
+   スマートフォン
 ================================================== */
 
 @media (max-width: 650px) {
 
-  .container {
-    width: min(100% - 20px, 1100px);
-
-    margin-top: 20px;
-  }
-
-  .header-inner {
-    min-height: 85px;
-  }
-
-  .header h1 {
-    font-size: 20px;
-  }
-
-  .form-grid {
-    grid-template-columns: 1fr;
-    gap: 0;
+  main {
+    padding: 25px 15px 45px;
   }
 
   .card {
     padding: 20px;
-    border-radius: 14px;
+  }
+
+  .header {
+    padding: 14px 15px;
+  }
+
+  .header-inner {
+    gap: 10px;
+  }
+
+  .logo-text {
+    font-size: 15px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
   }
 
   .application-info {
     grid-template-columns: 1fr;
   }
 
-  .application-top {
+  .application-header {
     align-items: flex-start;
     flex-direction: column;
   }
 
-  .section-title {
+  .total-box {
     align-items: flex-start;
-    gap: 15px;
+    flex-direction: column;
   }
 
-  .teacher-status {
+  .via-point {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .via-remove {
+    width: 100%;
+  }
+
+  .success-title {
+    font-size: 24px;
   }
 
 }
