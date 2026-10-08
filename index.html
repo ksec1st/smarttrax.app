@@ -9,181 +9,35 @@
 
 </head>
 <body>
-
-
 <!-- ==================================================
      ヘッダー
 ================================================== -->
 <header class="header">
 <div class="header-inner"><div>
-<div class="logo">SmartTrax</div><div class="subtitle">交通費申請システム"スマトラ"</div></div>
-<button id="logoutButton" class="logout-button hidden">ログアウト</button></div></header>
-
+<div class="logo">SmartTrax</div><div class="subtitle">交通費申請システム"スマトラ"</div></div><button id="logoutButton" class="logout-button hidden">ログアウト</button></div></header>
 
 <main class="container">
-
-
 <!-- ==================================================
      ログイン
 ================================================== -->
-
-<section
-  id="loginScreen"
-  class="screen">
-
-  <div class="login-wrapper">
-
-    <div class="card login-card">
-
-      <h1>ログイン</h1>
-
-      <p class="description">
-        登録されているIDを入力してください。
-      </p>
-
-
-      <form id="loginForm">
-
-        <label for="loginId">
-          ID
-        </label>
-
-        <input
-          type="text"
-          id="loginId"
-          placeholder="例：student001"
-          autocomplete="off"
-          required>
-
-
-        <button
-          type="submit"
-          class="primary-button">
-          ログイン
-        </button>
-
-      </form>
-
-
-      <p
-        id="loginMessage"
-        class="message">
-      </p>
-
-    </div>
-
-  </div>
-
+<section id="loginScreen" class="screen">
+<div class="login-wrapper"><div class="card login-card"><h1>ログイン</h1><p class="description">登録されているIDを入力してください。</p><form id="loginForm"><label for="loginId">ID</label><input type="text" id="loginId" placeholder="例：student001" autocomplete="off"required>
+<button type="submit" class="primary-button">ログイン</button></form><p id="loginMessage" class="message"></p></div></div>
 </section>
-
-
-
 <!-- ==================================================
      生徒画面
 ================================================== -->
-
-<section
-  id="studentScreen"
-  class="screen hidden">
-
-
-  <div class="dashboard-header">
-
-    <div>
-
-      <p class="eyebrow">
-        STUDENT
-      </p>
-
-      <h1>
-        交通費申請
-      </h1>
-
-      <p id="studentName"></p>
-
-    </div>
-
-  </div>
-
-
-  <!-- 申請フォーム -->
-
-  <div class="card">
-
-    <h2>
-      新しい交通費申請
-    </h2>
-
-
-    <form id="expenseForm">
-
-
-      <div class="form-grid">
-
-
-        <div class="form-group">
-
-          <label>
-            氏名
-          </label>
-
-          <input
-            type="text"
-            id="name"
-            required>
-
-        </div>
-
-
-        <div class="form-group">
-
-          <label>
-            学年
-          </label>
-
-          <input
-            type="text"
-            id="grade"
-            readonly>
-
-        </div>
-
-
-        <div class="form-group">
-
-          <label>
-            クラス
-          </label>
-
-          <select
-            id="className"
-            required>
-
-            <option value="">
-              選択してください
-            </option>
-
-            <option value="1組">1組</option>
-            <option value="2組">2組</option>
-            <option value="3組">3組</option>
-            <option value="4組">4組</option>
-            <option value="5組">5組</option>
-
-          </select>
-
-        </div>
-
-
-        <div class="form-group">
-
-          <label>
-            遠征日
-          </label>
-
-          <input
-            type="date"
-            id="tripDate"
-            required>
+<section id="studentScreen" class="screen hidden">
+<div class="dashboard-header"><div><p class="eyebrow">STUDENT</p><h1>交通費申請</h1><p id="studentName"></p></div></div>
+<!-- 申請フォーム -->
+<div class="card"><h2>新しい交通費申請</h2><form id="expenseForm"><div class="form-grid">
+<div class="form-group"><label>氏名</label><input type="text" id="name"required></div>
+<div class="form-group"><label>学年</label><input type="text" id="grade"readonly></div>
+<div class="form-group"><label>クラス</label>
+<select id="className" required><option value="">選択してください</option><option value="1組">1組</option><option value="2組">2組</option><option value="3組">3組</option><option value="4組">4組</option><option value="5組">5組</option></select>
+</div>
+<div class="form-group"><label>遠征日</label>
+<input type="date" id="tripDate" required>
 
         </div>
 
