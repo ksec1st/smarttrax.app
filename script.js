@@ -1,6 +1,5 @@
 /* ==================================================
    SmartTrax
-   交通費申請システム
 ================================================== */
 
 
@@ -13,10 +12,12 @@ const GAS_URL =
 
 
 /* ==================================================
-   現在ログイン中のユーザー
+   状態
 ================================================== */
 
 let currentUser = null;
+
+let viaPoints = [];
 
 
 /* ==================================================
@@ -40,649 +41,366 @@ const logoutButton =
 
 
 /* ==================================================
+   API
+================================================== */
+
+async function api(data) {
+
+  const response =
+    await fetch(GAS_URL, {
+
+      method: "POST",
+
+      headers: {
+        "Content-Type":
+          "text/plain;charset=utf-8"
+      },
+
+      body: JSON.stringify(data)
+
+    });
+
+
+  return await response.json();
+
+}
+
+
+/* ==================================================
+   画面切替
+================================================== */
+
+function showScreen(screen) {
+
+  loginScreen.classList.add("hidden");
+
+  studentScreen.classList.add("hidden");
+
+  teacherScreen.classList.add("hidden");
+
+  successScreen.classList.add("hidden");
+
+
+  screen.classList.remove("hidden");
+
+}
+
+
+/* ==================================================
    ログイン
 ================================================== */
 
-const loginForm =
-  document.getElementById("loginForm");
+document
+  .getElementById("loginForm")
+  .addEventListener(
+    "submit",
+    async function(e) {
 
-const loginId =
-  document.getElementById("loginId");
-
-const loginMessage =
-  document.getElementById("loginMessage");
-
-
-/* ==================================================
-   生徒
-================================================== */
-
-const studentName =
-  document.getElementById("studentName");
-
-const expenseForm =
-  document.getElementById("expenseForm");
-
-const nameInput =
-  document.getElementById("name");
-
-const grade =
-  document.getElementById("grade");
-
-const className =
-  document.getElementById("className");
-
-const tripDate =
-  document.getElementById("tripDate");
-
-const destination =
-  document.getElementById("destination");
-
-const eventName =
-  document.getElementById("eventName");
-
-const departure =
-  document.getElementById("departure");
-
-const arrival =
-  document.getElementById("arrival");
-
-const transportCost =
-  document.getElementById("transportCost");
-
-const totalAmount =
-  document.getElementById("totalAmount");
-
-const note =
-  document.getElementById("note");
-
-const confirmCheckbox =
-  document.getElementById("confirm");
-
-const submitButton =
-  document.getElementById("submitButton");
+      e.preventDefault();
 
 
-/* ==================================================
-   経由地
-================================================== */
-
-const viaPoints =
-  document.getElementById("viaPoints");
-
-const addViaPoint =
-  document.getElementById("addViaPoint");
+      const loginId =
+        document
+          .getElementById("loginId")
+          .value
+          .trim();
 
 
-/* ==================================================
-   区間料金
-================================================== */
-
-const routeCosts =
-  document.getElementById("routeCosts");
+      const message =
+        document.getElementById(
+          "loginMessage"
+        );
 
 
-/* ==================================================
-   生徒申請履歴
-================================================== */
-
-const studentApplications =
-  document.getElementById(
-    "studentApplications"
-  );
-
-const refreshStudentButton =
-  document.getElementById(
-    "refreshStudentButton"
-  );
+      message.textContent =
+        "ログインしています…";
 
 
-/* ==================================================
-   教員
-================================================== */
+      try {
 
-const teacherApplications =
-  document.getElementById(
-    "teacherApplications"
-  );
+        const result =
+          await api({
 
-const refreshTeacherButton =
-  document.getElementById(
-    "refreshTeacherButton"
-  );
+            action: "login",
+
+            userId: loginId
+
+          });
 
 
-/* ==================================================
-   成功画面
-================================================== */
+        if (!result.success) {
 
-const applicationNumber =
-  document.getElementById(
-    "applicationNumber"
-  );
+          message.textContent =
+            result.message;
 
-const backToDashboard =
-  document.getElementById(
-    "backToDashboard"
-  );
+          return;
 
-const newApplication =
-  document.getElementById(
-    "newApplication"
+        }
+
+
+        currentUser =
+          result.user;
+
+
+        logoutButton
+          .classList
+          .remove("hidden");
+
+
+        if (
+          currentUser.role === "教員"
+        ) {
+
+          document
+            .getElementById("teacherName")
+            .textContent =
+              currentUser.name +
+              " さん";
+
+
+          showScreen(
+            teacherScreen
+          );
+
+
+          loadTeacherApplications();
+
+          loadStudents();
+
+
+        } else {
+
+
+          document
+            .getElementById("studentName")
+            .textContent =
+              currentUser.name +
+              " さん";
+
+
+          document
+            .getElementById("name")
+            .value =
+              currentUser.name;
+
+
+          document
+            .getElementById("grade")
+            .value =
+              currentUser.grade;
+
+
+          showScreen(
+            studentScreen
+          );
+
+
+          updateSegmentFees();
+
+          loadMyApplications();
+
+        }
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        message.textContent =
+          "通信エラーが発生しました。";
+
+      }
+
+    }
   );
 
 
 /* ==================================================
-   初期化
+   ログアウト
 ================================================== */
 
-document.addEventListener(
-  "DOMContentLoaded",
-  () => {
+logoutButton.addEventListener(
+  "click",
+  function() {
 
-    restoreLogin();
+    currentUser = null;
 
-    setupEvents();
+    logoutButton
+      .classList
+      .add("hidden");
+
+    document
+      .getElementById("loginId")
+      .value = "";
+
+    showScreen(loginScreen);
 
   }
 );
 
 
 /* ==================================================
-   イベント設定
+   経由地追加
 ================================================== */
 
-function setupEvents() {
+document
+  .getElementById("addViaButton")
+  .addEventListener(
+    "click",
+    function() {
 
+      viaPoints.push("");
 
-  /* ログイン */
+      renderViaPoints();
 
-  if (loginForm) {
+      updateSegmentFees();
 
-    loginForm.addEventListener(
-      "submit",
-      handleLogin
-    );
-
-  }
-
-
-  /* ログアウト */
-
-  if (logoutButton) {
-
-    logoutButton.addEventListener(
-      "click",
-      logout
-    );
-
-  }
-
-
-  /* 交通費 */
-
-  if (transportCost) {
-
-    transportCost.addEventListener(
-      "input",
-      updateTotal
-    );
-
-  }
-
-
-  /* 出発地 */
-
-  if (departure) {
-
-    departure.addEventListener(
-      "input",
-      updateRouteCosts
-    );
-
-  }
-
-
-  /* 到着地 */
-
-  if (arrival) {
-
-    arrival.addEventListener(
-      "input",
-      updateRouteCosts
-    );
-
-  }
-
-
-  /* 経由地追加 */
-
-  if (addViaPoint) {
-
-    addViaPoint.addEventListener(
-      "click",
-      () => {
-
-        addViaPointInput();
-
-      }
-    );
-
-  }
-
-
-  /* 申請 */
-
-  if (expenseForm) {
-
-    expenseForm.addEventListener(
-      "submit",
-      handleSubmit
-    );
-
-  }
-
-
-  /* 生徒申請履歴 */
-
-  if (refreshStudentButton) {
-
-    refreshStudentButton.addEventListener(
-      "click",
-      loadStudentApplications
-    );
-
-  }
-
-
-  /* 教員申請一覧 */
-
-  if (refreshTeacherButton) {
-
-    refreshTeacherButton.addEventListener(
-      "click",
-      loadTeacherApplications
-    );
-
-  }
-
-
-  /* 新しい申請 */
-
-  if (newApplication) {
-
-    newApplication.addEventListener(
-      "click",
-      () => {
-
-        showStudentDashboard();
-
-        if (expenseForm) {
-
-          expenseForm.reset();
-
-        }
-
-        clearViaPoints();
-
-        updateTotal();
-
-        updateRouteCosts();
-
-        window.scrollTo({
-          top: 0,
-          behavior: "smooth"
-        });
-
-      }
-    );
-
-  }
-
-
-  /* ダッシュボード */
-
-  if (backToDashboard) {
-
-    backToDashboard.addEventListener(
-      "click",
-      () => {
-
-        showDashboard();
-
-      }
-    );
-
-  }
-
-}
-
-
-/* ==================================================
-   API
-================================================== */
-
-async function apiRequest(data) {
-
-  const response =
-    await fetch(
-      GAS_URL,
-      {
-        method: "POST",
-
-        headers: {
-          "Content-Type":
-            "text/plain;charset=utf-8"
-        },
-
-        body: JSON.stringify(data)
-
-      }
-    );
-
-
-  if (!response.ok) {
-
-    throw new Error(
-      `通信エラー: ${response.status}`
-    );
-
-  }
-
-
-  const result =
-    await response.json();
-
-
-  if (!result.success) {
-
-    throw new Error(
-      result.message ||
-      "処理に失敗しました。"
-    );
-
-  }
-
-
-  return result;
-
-}
-
-
-/* ==================================================
-   ログイン
-================================================== */
-
-async function handleLogin(event) {
-
-  event.preventDefault();
-
-
-  const id =
-    loginId.value.trim();
-
-
-  if (!id) {
-
-    showLoginMessage(
-      "IDを入力してください。",
-      true
-    );
-
-    return;
-
-  }
-
-
-  showLoginMessage(
-    "ログインしています..."
+    }
   );
 
 
-  try {
-
-    const result =
-      await apiRequest({
-
-        action: "login",
-
-        userId: id
-
-      });
-
-
-    currentUser =
-      result.user;
-
-
-    localStorage.setItem(
-      "expenseCurrentUser",
-      JSON.stringify(
-        currentUser
-      )
-    );
-
-
-    showDashboard();
-
-
-  } catch (error) {
-
-    console.error(error);
-
-
-    showLoginMessage(
-      error.message,
-      true
-    );
-
-  }
-
-}
-
-
 /* ==================================================
-   ログイン復元
+   経由地表示
 ================================================== */
 
-function restoreLogin() {
+function renderViaPoints() {
 
-  const savedUser =
-    localStorage.getItem(
-      "expenseCurrentUser"
+  const container =
+    document.getElementById(
+      "viaContainer"
     );
 
 
-  if (!savedUser) {
+  container.innerHTML = "";
 
-    showLoginScreen();
+
+  if (viaPoints.length === 0) {
 
     return;
 
   }
 
 
-  try {
+  const label =
+    document.createElement("label");
 
-    currentUser =
-      JSON.parse(
-        savedUser
+  label.textContent =
+    "経由地";
+
+  container.appendChild(label);
+
+
+  viaPoints.forEach(
+    function(point, index) {
+
+      const row =
+        document.createElement("div");
+
+      row.className =
+        "via-row";
+
+
+      const input =
+        document.createElement("input");
+
+      input.type = "text";
+
+      input.placeholder =
+        "例：中書島駅";
+
+      input.value =
+        point;
+
+
+      input.addEventListener(
+        "input",
+        function() {
+
+          viaPoints[index] =
+            input.value;
+
+          updateSegmentFees();
+
+        }
       );
 
 
-    if (
-      !currentUser ||
-      !currentUser.id
-    ) {
+      const remove =
+        document.createElement("button");
 
-      throw new Error();
+      remove.type = "button";
+
+      remove.className =
+        "remove-via";
+
+      remove.textContent =
+        "×";
+
+
+      remove.addEventListener(
+        "click",
+        function() {
+
+          viaPoints.splice(
+            index,
+            1
+          );
+
+          renderViaPoints();
+
+          updateSegmentFees();
+
+        }
+      );
+
+
+      row.appendChild(input);
+
+      row.appendChild(remove);
+
+      container.appendChild(row);
 
     }
-
-
-    showDashboard();
-
-
-  } catch (error) {
-
-    localStorage.removeItem(
-      "expenseCurrentUser"
-    );
-
-    showLoginScreen();
-
-  }
-
-}
-
-
-/* ==================================================
-   ログイン画面
-================================================== */
-
-function showLoginScreen() {
-
-  hideAllScreens();
-
-
-  loginScreen.classList.remove(
-    "hidden"
   );
 
-
-  if (logoutButton) {
-
-    logoutButton.classList.add(
-      "hidden"
-    );
-
-  }
-
 }
 
 
 /* ==================================================
-   ダッシュボード
+   区間取得
 ================================================== */
 
-function showDashboard() {
+function getRoutePoints() {
 
-  hideAllScreens();
+  const departure =
+    document
+      .getElementById("departure")
+      .value
+      .trim();
 
 
-  if (!currentUser) {
+  const arrival =
+    document
+      .getElementById("arrival")
+      .value
+      .trim();
 
-    showLoginScreen();
 
-    return;
+  const points = [];
 
+
+  if (departure) {
+    points.push(departure);
   }
 
 
-  if (logoutButton) {
+  viaPoints.forEach(
+    function(point) {
 
-    logoutButton.classList.remove(
-      "hidden"
-    );
+      if (point.trim()) {
 
-  }
-
-
-  if (
-    currentUser.role === "教員"
-  ) {
-
-    showTeacherDashboard();
-
-  } else {
-
-    showStudentDashboard();
-
-  }
-
-}
-
-
-/* ==================================================
-   生徒画面
-================================================== */
-
-function showStudentDashboard() {
-
-  hideAllScreens();
-
-
-  studentScreen.classList.remove(
-    "hidden"
-  );
-
-
-  if (studentName) {
-
-    studentName.textContent =
-      currentUser.name || "";
-
-  }
-
-
-  if (nameInput) {
-
-    nameInput.value =
-      currentUser.name || "";
-
-  }
-
-
-  if (grade) {
-
-    grade.value =
-      currentUser.grade || "";
-
-  }
-
-
-  loadStudentApplications();
-
-}
-
-
-/* ==================================================
-   教員画面
-================================================== */
-
-function showTeacherDashboard() {
-
-  hideAllScreens();
-
-
-  teacherScreen.classList.remove(
-    "hidden"
-  );
-
-
-  loadTeacherApplications();
-
-}
-
-
-/* ==================================================
-   画面を隠す
-================================================== */
-
-function hideAllScreens() {
-
-  [
-    loginScreen,
-    studentScreen,
-    teacherScreen,
-    successScreen
-  ].forEach(
-    screen => {
-
-      if (screen) {
-
-        screen.classList.add(
-          "hidden"
+        points.push(
+          point.trim()
         );
 
       }
@@ -690,653 +408,458 @@ function hideAllScreens() {
     }
   );
 
-}
 
-
-/* ==================================================
-   ログアウト
-================================================== */
-
-function logout() {
-
-  currentUser = null;
-
-
-  localStorage.removeItem(
-    "expenseCurrentUser"
-  );
-
-
-  if (expenseForm) {
-
-    expenseForm.reset();
-
+  if (arrival) {
+    points.push(arrival);
   }
 
 
-  clearViaPoints();
-
-  updateTotal();
-
-  updateRouteCosts();
-
-
-  showLoginScreen();
+  return points;
 
 }
 
 
 /* ==================================================
-   ログインメッセージ
+   区間料金UI
 ================================================== */
 
-function showLoginMessage(
-  message,
-  isError = false
-) {
+function updateSegmentFees() {
 
-  if (!loginMessage) {
+  const container =
+    document.getElementById(
+      "segmentFeeContainer"
+    );
+
+
+  const points =
+    getRoutePoints();
+
+
+  container.innerHTML = "";
+
+
+  if (points.length < 2) {
 
     return;
 
   }
 
 
-  loginMessage.textContent =
-    message;
+  const title =
+    document.createElement("label");
+
+  title.textContent =
+    "各区間料金";
+
+  container.appendChild(title);
 
 
-  loginMessage.className =
-    isError
-      ? "message error-message"
-      : "message";
+  const note =
+    document.createElement("div");
 
-}
+  note.className =
+    "student-note";
+
+  note.textContent =
+    "各区間料金は記録用です。合計金額には含まれません。";
+
+  container.appendChild(note);
 
 
-/* ==================================================
-   合計金額
-================================================== */
+  const list =
+    document.createElement("div");
 
-function updateTotal() {
+  list.className =
+    "segment-fee-list";
 
-  if (
-    !transportCost ||
-    !totalAmount
+
+  for (
+    let i = 0;
+    i < points.length - 1;
+    i++
   ) {
 
-    return;
+    const item =
+      document.createElement("div");
+
+    item.className =
+      "segment-fee-item";
+
+
+    const label =
+      document.createElement("div");
+
+    label.className =
+      "segment-label";
+
+    label.textContent =
+      points[i] +
+      " → " +
+      points[i + 1];
+
+
+    const money =
+      document.createElement("div");
+
+    money.className =
+      "money-input";
+
+
+    const input =
+      document.createElement("input");
+
+    input.type = "number";
+
+    input.min = "0";
+
+    input.step = "1";
+
+    input.placeholder = "0";
+
+    input.className =
+      "segment-fee-input";
+
+
+    const yen =
+      document.createElement("span");
+
+    yen.textContent =
+      "円";
+
+
+    money.appendChild(input);
+
+    money.appendChild(yen);
+
+
+    item.appendChild(label);
+
+    item.appendChild(money);
+
+
+    list.appendChild(item);
 
   }
 
 
-  const amount =
-    Number(
-      transportCost.value
-    ) || 0;
-
-
-  totalAmount.textContent =
-    "¥" +
-    amount.toLocaleString();
+  container.appendChild(list);
 
 }
 
 
 /* ==================================================
-   経由地追加
+   出発地・到着地変更
 ================================================== */
 
-function addViaPointInput(
-  value = ""
-) {
-
-  if (!viaPoints) {
-
-    return;
-
-  }
-
-
-  const wrapper =
-    document.createElement(
-      "div"
-    );
-
-
-  wrapper.className =
-    "via-point";
-
-
-  const input =
-    document.createElement(
-      "input"
-    );
-
-
-  input.type =
-    "text";
-
-  input.className =
-    "via-point-input";
-
-  input.placeholder =
-    "例：大阪駅";
-
-  input.value =
-    value;
-
-
-  const removeButton =
-    document.createElement(
-      "button"
-    );
-
-
-  removeButton.type =
-    "button";
-
-  removeButton.className =
-    "via-remove";
-
-  removeButton.textContent =
-    "削除";
-
-
-  /* 経由地入力 */
-
-  input.addEventListener(
+document
+  .getElementById("departure")
+  .addEventListener(
     "input",
-    updateRouteCosts
+    updateSegmentFees
   );
 
 
-  /* 経由地削除 */
+document
+  .getElementById("arrival")
+  .addEventListener(
+    "input",
+    updateSegmentFees
+  );
 
-  removeButton.addEventListener(
-    "click",
-    () => {
 
-      wrapper.remove();
+/* ==================================================
+   交通費 → 合計金額
+================================================== */
 
-      updateRouteCosts();
+document
+  .getElementById("transportCost")
+  .addEventListener(
+    "input",
+    function() {
+
+      const value =
+        Number(this.value) || 0;
+
+
+      document
+        .getElementById(
+          "totalAmount"
+        )
+        .textContent =
+        value.toLocaleString();
 
     }
   );
 
 
-  wrapper.appendChild(
-    input
-  );
-
-  wrapper.appendChild(
-    removeButton
-  );
-
-
-  viaPoints.appendChild(
-    wrapper
-  );
-
-
-  updateRouteCosts();
-
-}
-
-
 /* ==================================================
-   経由地削除
+   申請
 ================================================== */
 
-function clearViaPoints() {
+document
+  .getElementById("expenseForm")
+  .addEventListener(
+    "submit",
+    async function(e) {
 
-  if (!viaPoints) {
+      e.preventDefault();
 
-    return;
 
-  }
+      if (!currentUser) {
 
+        alert(
+          "ログイン情報がありません。"
+        );
 
-  viaPoints.innerHTML =
-    "";
+        return;
 
-}
+      }
 
 
-/* ==================================================
-   経由地取得
-================================================== */
+      const confirm =
+        document
+          .getElementById("confirm")
+          .checked;
 
-function getViaPoints() {
 
-  const inputs =
-    document.querySelectorAll(
-      ".via-point-input"
-    );
+      if (!confirm) {
 
+        alert(
+          "入力内容を確認してください。"
+        );
 
-  return Array.from(
-    inputs
-  )
+        return;
 
-    .map(
-      input =>
-        input.value.trim()
-    )
+      }
 
-    .filter(
-      value =>
-        value !== ""
-    );
 
-}
+      const button =
+        document
+          .getElementById(
+            "submitButton"
+          );
 
 
-/* ==================================================
-   区間料金を更新
-================================================== */
+      button.disabled = true;
 
-function updateRouteCosts() {
+      button.textContent =
+        "送信中…";
 
-  if (!routeCosts) {
 
-    return;
+      try {
 
-  }
 
+        /* 区間料金 */
 
-  const departureValue =
-    departure
-      ? departure.value.trim()
-      : "";
+        const feeInputs =
+          document.querySelectorAll(
+            ".segment-fee-input"
+          );
 
 
-  const arrivalValue =
-    arrival
-      ? arrival.value.trim()
-      : "";
+        const segmentFees =
+          Array.from(
+            feeInputs
+          ).map(
+            function(input) {
 
+              return input.value || "";
 
-  const viaPointValues =
-    getViaPoints();
+            }
+          );
 
 
-  const locations = [
+        const data = {
 
-    departureValue,
+          action: "submit",
 
-    ...viaPointValues,
+          userId:
+            currentUser.id,
 
-    arrivalValue
+          name:
+            document
+              .getElementById("name")
+              .value,
 
-  ];
+          grade:
+            document
+              .getElementById("grade")
+              .value,
 
+          className:
+            document
+              .getElementById("className")
+              .value,
 
-  /*
-   * 出発地と到着地が
-   * まだ入力されていない
-   */
+          tripDate:
+            document
+              .getElementById("tripDate")
+              .value,
 
-  if (
-    !departureValue ||
-    !arrivalValue
-  ) {
-
-    routeCosts.innerHTML =
-      `
-      <div class="route-cost-empty">
-
-        出発地と到着地を入力すると、
-        区間ごとの料金を入力できます。
-
-      </div>
-      `;
-
-    return;
-
-  }
-
-
-  let html = "";
-
-
-  /*
-   * 各区間を生成
-   */
-
-  for (
-    let i = 0;
-    i < locations.length - 1;
-    i++
-  ) {
-
-    const from =
-      locations[i];
-
-    const to =
-      locations[i + 1];
-
-
-    html += `
-
-      <div class="route-cost-item">
-
-
-        <div class="route-name">
-
-          <span class="route-place">
-
-            ${escapeHtml(from)}
-
-          </span>
-
-
-          <span class="route-arrow">
-            →
-          </span>
-
-
-          <span class="route-place">
-
-            ${escapeHtml(to)}
-
-          </span>
-
-        </div>
-
-
-        <div class="route-price">
-
-          <input
-            type="number"
-            class="route-cost-input"
-            data-from="${escapeHtml(from)}"
-            data-to="${escapeHtml(to)}"
-            min="0"
-            placeholder="料金"
-          >
-
-          <span>
-            円
-          </span>
-
-        </div>
-
-
-      </div>
-
-    `;
-
-  }
-
-
-  routeCosts.innerHTML =
-    html;
-
-}
-
-
-/* ==================================================
-   区間料金取得
-================================================== */
-
-function getRouteCosts() {
-
-  const inputs =
-    document.querySelectorAll(
-      ".route-cost-input"
-    );
-
-
-  return Array.from(
-    inputs
-  )
-
-    .map(
-      input => {
-
-        return {
-
-          from:
-            input.dataset.from,
-
-          to:
-            input.dataset.to,
-
-          cost:
-            Number(
-              input.value
-            ) || 0
+          destination:
+            document
+              .getElementById("destination")
+              .value,
+
+          eventName:
+            document
+              .getElementById("eventName")
+              .value,
+
+          departure:
+            document
+              .getElementById("departure")
+              .value,
+
+          viaPoints:
+            viaPoints,
+
+          arrival:
+            document
+              .getElementById("arrival")
+              .value,
+
+          segmentFees:
+            segmentFees,
+
+          transportCost:
+            document
+              .getElementById(
+                "transportCost"
+              )
+              .value,
+
+          note:
+            document
+              .getElementById("note")
+              .value
 
         };
 
-      }
-    );
 
-}
+        const result =
+          await api(data);
+
+
+        if (!result.success) {
+
+          alert(
+            result.message
+          );
+
+          return;
+
+        }
+
+
+        document
+          .getElementById(
+            "applicationNumber"
+          )
+          .textContent =
+          result.applicationNumber;
+
+
+        showScreen(
+          successScreen
+        );
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        alert(
+          "送信中にエラーが発生しました。"
+        );
+
+      } finally {
+
+        button.disabled = false;
+
+        button.textContent =
+          "申請する";
+
+      }
+
+    }
+  );
 
 
 /* ==================================================
-   申請送信
+   新しい申請
 ================================================== */
 
-async function handleSubmit(
-  event
-) {
+document
+  .getElementById("newApplication")
+  .addEventListener(
+    "click",
+    function() {
 
-  event.preventDefault();
-
-
-  if (!currentUser) {
-
-    alert(
-      "ログインしてください。"
-    );
-
-    return;
-
-  }
+      document
+        .getElementById(
+          "expenseForm"
+        )
+        .reset();
 
 
-  if (
-    confirmCheckbox &&
-    !confirmCheckbox.checked
-  ) {
-
-    alert(
-      "入力内容を確認してチェックを入れてください。"
-    );
-
-    return;
-
-  }
+      document
+        .getElementById("name")
+        .value =
+        currentUser.name;
 
 
-  const viaPointValues =
-    getViaPoints();
+      document
+        .getElementById("grade")
+        .value =
+        currentUser.grade;
 
 
-  const viaPointText =
-    viaPointValues.join(
-      " → "
-    );
+      viaPoints = [];
+
+      renderViaPoints();
+
+      updateSegmentFees();
 
 
-  const cost =
-    Number(
-      transportCost.value
-    ) || 0;
+      document
+        .getElementById(
+          "totalAmount"
+        )
+        .textContent =
+        "0";
 
 
-  const data = {
-
-    action:
-      "submit",
-
-
-    userId:
-      currentUser.id,
-
-
-    name:
-      nameInput.value.trim(),
-
-
-    grade:
-      grade.value,
-
-
-    className:
-      className.value,
-
-
-    tripDate:
-      tripDate.value,
-
-
-    destination:
-      destination.value.trim(),
-
-
-    eventName:
-      eventName.value.trim(),
-
-
-    departure:
-      departure.value.trim(),
-
-
-    viaPoints:
-      viaPointText,
-
-
-    arrival:
-      arrival.value.trim(),
-
-
-    /*
-     * 区間料金
-     *
-     * 記録用
-     * 合計金額には含めない
-     */
-
-    routeCosts:
-      getRouteCosts(),
-
-
-    /*
-     * 実際の申請金額
-     */
-
-    transportCost:
-      cost,
-
-
-    totalAmount:
-      cost,
-
-
-    note:
-      note.value.trim()
-
-  };
-
-
-  submitButton.disabled =
-    true;
-
-
-  submitButton.textContent =
-    "送信中...";
-
-
-  try {
-
-    const result =
-      await apiRequest(
-        data
+      showScreen(
+        studentScreen
       );
 
-
-    applicationNumber.textContent =
-      result.applicationNumber;
-
-
-    hideAllScreens();
-
-
-    successScreen.classList.remove(
-      "hidden"
-    );
-
-
-    expenseForm.reset();
-
-    clearViaPoints();
-
-    updateTotal();
-
-    updateRouteCosts();
-
-
-  } catch (error) {
-
-    console.error(error);
-
-
-    alert(
-      error.message ||
-      "申請に失敗しました。"
-    );
-
-
-  } finally {
-
-    submitButton.disabled =
-      false;
-
-
-    submitButton.textContent =
-      "交通費を申請する";
-
-  }
-
-}
+    }
+  );
 
 
 /* ==================================================
-   生徒：申請履歴
+   自分の申請
 ================================================== */
 
-async function loadStudentApplications() {
+async function loadMyApplications() {
 
-  if (!currentUser) {
-
-    return;
-
-  }
-
-
-  if (!studentApplications) {
-
-    return;
-
-  }
+  const container =
+    document.getElementById(
+      "studentApplications"
+    );
 
 
-  studentApplications.innerHTML =
-    `
-    <div class="loading">
-      読み込み中...
-    </div>
-    `;
+  container.innerHTML =
+    `<p class="empty-message">
+      読み込んでいます…
+    </p>`;
 
 
   try {
 
     const result =
-      await apiRequest({
+      await api({
 
         action:
           "getMyApplications",
@@ -1347,587 +870,129 @@ async function loadStudentApplications() {
       });
 
 
-    renderStudentApplications(
-      result.applications || []
-    );
+    if (!result.success) {
+
+      container.innerHTML =
+        `<p class="empty-message">
+          ${result.message}
+        </p>`;
+
+      return;
+
+    }
+
+
+    if (
+      !result.applications ||
+      result.applications.length === 0
+    ) {
+
+      container.innerHTML =
+        `<p class="empty-message">
+          まだ申請はありません。
+        </p>`;
+
+      return;
+
+    }
+
+
+    container.innerHTML =
+      result.applications
+        .map(
+          renderStudentApplication
+        )
+        .join("");
 
 
   } catch (error) {
 
     console.error(error);
 
-
-    studentApplications.innerHTML =
-      `
-      <div class="message error-message">
-
-        ${escapeHtml(
-          error.message
-        )}
-
-      </div>
-      `;
+    container.innerHTML =
+      `<p class="empty-message">
+        読み込みに失敗しました。
+      </p>`;
 
   }
 
 }
 
 
-/* ==================================================
-   生徒：申請表示
-================================================== */
-
-function renderStudentApplications(
-  applications
-) {
-
-  if (
-    !applications ||
-    applications.length === 0
-  ) {
-
-    studentApplications.innerHTML =
-      `
-      <div class="empty-message">
-
-        まだ申請はありません。
-
-      </div>
-      `;
-
-    return;
-
-  }
-
-
-  studentApplications.innerHTML =
-    applications
-      .map(
-        app =>
-          createApplicationCard(
-            app,
-            false
-          )
-      )
-      .join("");
-
-}
-
-
-/* ==================================================
-   教員：全申請
-================================================== */
-
-async function loadTeacherApplications() {
-
-  if (!currentUser) {
-
-    return;
-
-  }
-
-
-  if (
-    currentUser.role !== "教員"
-  ) {
-
-    return;
-
-  }
-
-
-  if (!teacherApplications) {
-
-    return;
-
-  }
-
-
-  teacherApplications.innerHTML =
-    `
-    <div class="loading">
-      読み込み中...
-    </div>
-    `;
-
-
-  try {
-
-    const result =
-      await apiRequest({
-
-        action:
-          "getAllApplications",
-
-        userId:
-          currentUser.id
-
-      });
-
-
-    renderTeacherApplications(
-      result.applications || []
-    );
-
-
-  } catch (error) {
-
-    console.error(error);
-
-
-    teacherApplications.innerHTML =
-      `
-      <div class="message error-message">
-
-        ${escapeHtml(
-          error.message
-        )}
-
-      </div>
-      `;
-
-  }
-
-}
-
-
-/* ==================================================
-   教員：申請表示
-================================================== */
-
-function renderTeacherApplications(
-  applications
-) {
-
-  if (
-    !applications ||
-    applications.length === 0
-  ) {
-
-    teacherApplications.innerHTML =
-      `
-      <div class="empty-message">
-
-        申請はありません。
-
-      </div>
-      `;
-
-    return;
-
-  }
-
-
-  teacherApplications.innerHTML =
-    applications
-      .map(
-        app =>
-          createApplicationCard(
-            app,
-            true
-          )
-      )
-      .join("");
-
-}
-
-
-/* ==================================================
-   申請カード
-================================================== */
-
-function createApplicationCard(
-  app,
-  isTeacher
-) {
-
-  const status =
-    app.status ||
-    "未確認";
-
-
-  const statusClass =
-    `status-${status}`;
-
-
-  /*
-   * 経由地
-   */
-
-  const viaHtml =
-    app.viaPoints
-      ? `
-        <p>
-
-          <strong>
-            経由地：
-          </strong>
-
-          ${escapeHtml(
-            app.viaPoints
-          )}
-
-        </p>
-      `
-      : "";
-
-
-  /*
-   * 区間料金
-   */
-
-  let routeCostsHtml =
-    "";
-
-
-  if (
-    app.routeCosts &&
-    app.routeCosts.length > 0
-  ) {
-
-    routeCostsHtml = `
-
-      <p>
-
-        <strong>
-          区間料金：
-        </strong>
-
-        <br>
-
-        ${app.routeCosts
-          .map(
-            route => `
-              ${escapeHtml(
-                route.from
-              )}
-              →
-              ${escapeHtml(
-                route.to
-              )}
-              ：
-              ¥${Number(
-                route.cost || 0
-              ).toLocaleString()}
-              <br>
-            `
-          )
-          .join("")}
-
-      </p>
-
-    `;
-
-  }
-
-
-  /*
-   * 教員用ステータス
-   */
-
-  const teacherStatusHtml =
-    isTeacher
-      ? `
-
-        <p>
-
-          <strong>
-            ステータス：
-          </strong>
-
-
-          <select
-            class="status-select"
-            onchange="
-              changeStatus(
-                '${escapeHtml(
-                  app.applicationNumber
-                )}',
-                this.value
-              )
-            "
-          >
-
-            <option
-              value="未確認"
-              ${
-                status === "未確認"
-                  ? "selected"
-                  : ""
-              }
-            >
-              未確認
-            </option>
-
-
-            <option
-              value="確認中"
-              ${
-                status === "確認中"
-                  ? "selected"
-                  : ""
-              }
-            >
-              確認中
-            </option>
-
-
-            <option
-              value="承認"
-              ${
-                status === "承認"
-                  ? "selected"
-                  : ""
-              }
-            >
-              承認
-            </option>
-
-
-            <option
-              value="差し戻し"
-              ${
-                status === "差し戻し"
-                  ? "selected"
-                  : ""
-              }
-            >
-              差し戻し
-            </option>
-
-
-            <option
-              value="支払済"
-              ${
-                status === "支払済"
-                  ? "selected"
-                  : ""
-              }
-            >
-              支払済
-            </option>
-
-          </select>
-
-        </p>
-
-      `
-      : `
-
-        <p>
-
-          <strong>
-            ステータス：
-          </strong>
-
-
-          <span
-            class="status ${statusClass}"
-          >
-            ${escapeHtml(
-              status
-            )}
-          </span>
-
-        </p>
-
-      `;
-
+function renderStudentApplication(app) {
 
   return `
 
-    <div
-      class="
-        application-card
-        ${
-          isTeacher
-            ? "teacher-application"
-            : ""
-        }
-      "
-    >
+    <div class="application-item">
 
+      <div class="application-top">
 
-      <div class="application-header">
+        <div class="application-number">
+          ${escapeHtml(app.applicationNumber)}
+        </div>
 
-        <span class="application-number">
-
-          ${escapeHtml(
-            app.applicationNumber
-          )}
-
-        </span>
-
-
-        <span class="application-date">
-
-          ${escapeHtml(
-            app.tripDate || ""
-          )}
-
-        </span>
+        <div>
+          ${escapeHtml(app.status)}
+        </div>
 
       </div>
 
 
+      <div class="application-detail">
 
-      <div class="application-info">
+        <div>
+          <div class="detail-label">
+            遠征日
+          </div>
 
-
-        ${
-          isTeacher
-            ? `
-
-              <p>
-
-                <strong>
-                  申請者：
-                </strong>
-
-                ${escapeHtml(
-                  app.name || ""
-                )}
-
-              </p>
+          <div class="detail-value">
+            ${escapeHtml(app.tripDate)}
+          </div>
+        </div>
 
 
-              <p>
+        <div>
+          <div class="detail-label">
+            遠征先
+          </div>
 
-                <strong>
-                  学年：
-                </strong>
-
-                ${escapeHtml(
-                  app.grade || ""
-                )}
-
-              </p>
+          <div class="detail-value">
+            ${escapeHtml(app.destination)}
+          </div>
+        </div>
 
 
-              <p>
+        <div>
+          <div class="detail-label">
+            大会・イベント
+          </div>
 
-                <strong>
-                  クラス：
-                </strong>
-
-                ${escapeHtml(
-                  app.className || ""
-                )}
-
-              </p>
-
-            `
-            : ""
-        }
+          <div class="detail-value">
+            ${escapeHtml(app.eventName)}
+          </div>
+        </div>
 
 
-        <p>
+        <div>
+          <div class="detail-label">
+            交通費
+          </div>
 
-          <strong>
-            遠征先：
-          </strong>
-
-          ${escapeHtml(
-            app.destination || ""
-          )}
-
-        </p>
+          <div class="detail-value">
+            ${Number(app.transportCost).toLocaleString()}円
+          </div>
+        </div>
 
 
-        <p>
+        <div>
+          <div class="detail-label">
+            合計金額
+          </div>
 
-          <strong>
-            大会・イベント：
-          </strong>
-
-          ${escapeHtml(
-            app.eventName || ""
-          )}
-
-        </p>
-
-
-        <p>
-
-          <strong>
-            出発地：
-          </strong>
-
-          ${escapeHtml(
-            app.departure || ""
-          )}
-
-        </p>
-
-
-        ${viaHtml}
-
-
-        <p>
-
-          <strong>
-            到着地：
-          </strong>
-
-          ${escapeHtml(
-            app.arrival || ""
-          )}
-
-        </p>
-
-
-        ${routeCostsHtml}
-
-
-        <p>
-
-          <strong>
-            交通費：
-          </strong>
-
-          ¥${Number(
-            app.transportCost || 0
-          ).toLocaleString()}
-
-        </p>
-
-
-        <p>
-
-          <strong>
-            合計金額：
-          </strong>
-
-          ¥${Number(
-            app.totalAmount || 0
-          ).toLocaleString()}
-
-        </p>
-
-
-        ${
-          app.note
-            ? `
-
-              <p>
-
-                <strong>
-                  備考：
-                </strong>
-
-                ${escapeHtml(
-                  app.note
-                )}
-
-              </p>
-
-            `
-            : ""
-        }
-
-
-        ${teacherStatusHtml}
-
+          <div class="detail-value">
+            ${Number(app.totalAmount).toLocaleString()}円
+          </div>
+        </div>
 
       </div>
 
@@ -1939,72 +1004,1197 @@ function createApplicationCard(
 
 
 /* ==================================================
-   ステータス変更
+   生徒申請更新
 ================================================== */
 
-async function changeStatus(
-  applicationNumber,
-  status
-) {
-
-  if (!currentUser) {
-
-    return;
-
-  }
+document
+  .getElementById(
+    "refreshStudentButton"
+  )
+  .addEventListener(
+    "click",
+    loadMyApplications
+  );
 
 
-  if (
-    currentUser.role !== "教員"
-  ) {
+/* ==================================================
+   教員：申請一覧
+================================================== */
 
-    alert(
-      "教員のみ変更できます。"
+async function loadTeacherApplications() {
+
+  const container =
+    document.getElementById(
+      "teacherApplications"
     );
 
-    return;
 
-  }
+  container.innerHTML =
+    `<p class="empty-message">
+      読み込んでいます…
+    </p>`;
 
 
   try {
 
-    await apiRequest({
+    const result =
+      await api({
 
-      action:
-        "updateStatus",
+        action:
+          "getAllApplications",
 
-      userId:
-        currentUser.id,
+        userId:
+          currentUser.id
 
-      applicationNumber:
-        applicationNumber,
-
-      status:
-        status
-
-    });
+      });
 
 
-    await loadTeacherApplications();
+    if (!result.success) {
+
+      container.innerHTML =
+        `<p class="empty-message">
+          ${result.message}
+        </p>`;
+
+      return;
+
+    }
+
+
+    if (
+      !result.applications ||
+      result.applications.length === 0
+    ) {
+
+      container.innerHTML =
+        `<p class="empty-message">
+          申請はありません。
+        </p>`;
+
+      return;
+
+    }
+
+
+    container.innerHTML =
+      result.applications
+        .map(
+          renderTeacherApplication
+        )
+        .join("");
+
+
+    attachStatusEvents();
 
 
   } catch (error) {
 
     console.error(error);
 
-
-    alert(
-      error.message ||
-      "ステータス変更に失敗しました。"
-    );
-
-
-    await loadTeacherApplications();
+    container.innerHTML =
+      `<p class="empty-message">
+        読み込みに失敗しました。
+      </p>`;
 
   }
 
 }
+
+
+/* ==================================================
+   教員：申請表示
+================================================== */
+
+function renderTeacherApplication(app) {
+
+  const via =
+    app.viaPoints
+      ? app.viaPoints
+          .split("\n")
+          .filter(Boolean)
+      : [];
+
+
+  const fees =
+    app.segmentFees
+      ? app.segmentFees
+          .split("\n")
+          .filter(Boolean)
+      : [];
+
+
+  const routePoints = [
+
+    app.departure,
+
+    ...via,
+
+    app.arrival
+
+  ];
+
+
+  let feeHtml = "";
+
+
+  for (
+    let i = 0;
+    i < fees.length;
+    i++
+  ) {
+
+    const from =
+      routePoints[i] || "";
+
+    const to =
+      routePoints[i + 1] || "";
+
+
+    feeHtml += `
+
+      <div class="segment-fee-row">
+
+        <span>
+          ${escapeHtml(from)}
+          →
+          ${escapeHtml(to)}
+        </span>
+
+        <strong>
+          ${escapeHtml(fees[i])}
+        </strong>
+
+      </div>
+
+    `;
+
+  }
+
+
+  return `
+
+    <div class="teacher-application">
+
+      <div class="application-top">
+
+        <div>
+
+          <div class="application-number">
+
+            ${escapeHtml(
+              app.applicationNumber
+            )}
+
+          </div>
+
+          <strong>
+
+            ${escapeHtml(app.name)}
+
+          </strong>
+
+          <span>
+
+            ${escapeHtml(app.grade)}
+            ${escapeHtml(app.className)}
+
+          </span>
+
+        </div>
+
+
+        <div>
+
+          ${escapeHtml(app.submittedAt)}
+
+        </div>
+
+      </div>
+
+
+      <div class="application-detail">
+
+        <div>
+
+          <div class="detail-label">
+            遠征日
+          </div>
+
+          <div class="detail-value">
+            ${escapeHtml(app.tripDate)}
+          </div>
+
+        </div>
+
+
+        <div>
+
+          <div class="detail-label">
+            遠征先
+          </div>
+
+          <div class="detail-value">
+            ${escapeHtml(app.destination)}
+          </div>
+
+        </div>
+
+
+        <div>
+
+          <div class="detail-label">
+            大会・イベント
+          </div>
+
+          <div class="detail-value">
+            ${escapeHtml(app.eventName)}
+          </div>
+
+        </div>
+
+
+        <div>
+
+          <div class="detail-label">
+            交通費
+          </div>
+
+          <div class="detail-value">
+            ${Number(app.transportCost).toLocaleString()}円
+          </div>
+
+        </div>
+
+
+        <div>
+
+          <div class="detail-label">
+            合計金額
+          </div>
+
+          <div class="detail-value">
+            ${Number(app.totalAmount).toLocaleString()}円
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="teacher-route">
+
+        <strong>
+          経路
+        </strong>
+
+        <p>
+
+          ${escapeHtml(app.departure)}
+
+          ${via.length
+            ? " → " +
+              via
+                .map(escapeHtml)
+                .join(" → ")
+            : ""}
+
+          → 
+
+          ${escapeHtml(app.arrival)}
+
+        </p>
+
+
+        <div class="teacher-segment-fees">
+
+          <strong>
+            各区間料金
+          </strong>
+
+          ${feeHtml || `
+            <p>
+              区間料金なし
+            </p>
+          `}
+
+        </div>
+
+      </div>
+
+
+      ${
+        app.note
+          ? `
+            <div class="teacher-route">
+
+              <strong>
+                備考
+              </strong>
+
+              <p>
+                ${escapeHtml(app.note)}
+              </p>
+
+            </div>
+          `
+          : ""
+      }
+
+
+      <div class="status-row">
+
+        <select
+          class="status-select"
+          data-application="${escapeHtml(
+            app.applicationNumber
+          )}">
+
+          <option
+            value="未確認"
+            ${
+              app.status === "未確認"
+                ? "selected"
+                : ""
+            }>
+            未確認
+          </option>
+
+          <option
+            value="確認中"
+            ${
+              app.status === "確認中"
+                ? "selected"
+                : ""
+            }>
+            確認中
+          </option>
+
+          <option
+            value="承認"
+            ${
+              app.status === "承認"
+                ? "selected"
+                : ""
+            }>
+            承認
+          </option>
+
+          <option
+            value="差し戻し"
+            ${
+              app.status === "差し戻し"
+                ? "selected"
+                : ""
+            }>
+            差し戻し
+          </option>
+
+          <option
+            value="支払済"
+            ${
+              app.status === "支払済"
+                ? "selected"
+                : ""
+            }>
+            支払済
+          </option>
+
+        </select>
+
+
+        <button
+          class="status-button"
+          data-application="${escapeHtml(
+            app.applicationNumber
+          )}">
+
+          更新
+
+        </button>
+
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+
+/* ==================================================
+   ステータス更新イベント
+================================================== */
+
+function attachStatusEvents() {
+
+  document
+    .querySelectorAll(
+      ".status-button"
+    )
+    .forEach(
+      function(button) {
+
+        button.addEventListener(
+          "click",
+          async function() {
+
+            const applicationNumber =
+              button.dataset.application;
+
+
+            const select =
+              document.querySelector(
+                `.status-select[data-application="${CSS.escape(applicationNumber)}"]`
+              );
+
+
+            const status =
+              select.value;
+
+
+            button.disabled = true;
+
+            button.textContent =
+              "更新中…";
+
+
+            try {
+
+              const result =
+                await api({
+
+                  action:
+                    "updateStatus",
+
+                  userId:
+                    currentUser.id,
+
+                  applicationNumber:
+                    applicationNumber,
+
+                  status:
+                    status
+
+                });
+
+
+              if (!result.success) {
+
+                alert(
+                  result.message
+                );
+
+                return;
+
+              }
+
+
+              await loadTeacherApplications();
+
+
+            } catch (error) {
+
+              console.error(error);
+
+              alert(
+                "更新に失敗しました。"
+              );
+
+            } finally {
+
+              button.disabled = false;
+
+              button.textContent =
+                "更新";
+
+            }
+
+          }
+        );
+
+      }
+    );
+
+}
+
+
+/* ==================================================
+   教員：申請更新
+================================================== */
+
+document
+  .getElementById(
+    "refreshTeacherButton"
+  )
+  .addEventListener(
+    "click",
+    loadTeacherApplications
+  );
+
+
+/* ==================================================
+   教員：タブ
+================================================== */
+
+document
+  .querySelectorAll(
+    ".admin-tab"
+  )
+  .forEach(
+    function(tab) {
+
+      tab.addEventListener(
+        "click",
+        function() {
+
+          document
+            .querySelectorAll(
+              ".admin-tab"
+            )
+            .forEach(
+              function(item) {
+
+                item.classList
+                  .remove("active");
+
+              }
+            );
+
+
+          document
+            .querySelectorAll(
+              ".admin-tab-content"
+            )
+            .forEach(
+              function(content) {
+
+                content.classList
+                  .add("hidden");
+
+              }
+            );
+
+
+          tab.classList
+            .add("active");
+
+
+          document
+            .getElementById(
+              tab.dataset.tab
+            )
+            .classList
+            .remove("hidden");
+
+        }
+      );
+
+    }
+  );
+
+
+/* ==================================================
+   教員：生徒一覧
+================================================== */
+
+async function loadStudents() {
+
+  const container =
+    document.getElementById(
+      "studentManagement"
+    );
+
+
+  container.innerHTML =
+    `<p class="empty-message">
+      読み込んでいます…
+    </p>`;
+
+
+  try {
+
+    const result =
+      await api({
+
+        action:
+          "getStudents",
+
+        userId:
+          currentUser.id
+
+      });
+
+
+    if (!result.success) {
+
+      container.innerHTML =
+        `<p class="empty-message">
+          ${result.message}
+        </p>`;
+
+      return;
+
+    }
+
+
+    if (
+      !result.students ||
+      result.students.length === 0
+    ) {
+
+      container.innerHTML =
+        `<p class="empty-message">
+          登録されている生徒はいません。
+        </p>`;
+
+      return;
+
+    }
+
+
+    container.innerHTML =
+      result.students
+        .map(
+          renderStudent
+        )
+        .join("");
+
+
+    attachStudentEvents();
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    container.innerHTML =
+      `<p class="empty-message">
+        生徒一覧の取得に失敗しました。
+      </p>`;
+
+  }
+
+}
+
+
+/* ==================================================
+   生徒表示
+================================================== */
+
+function renderStudent(student) {
+
+  return `
+
+    <div class="student-row">
+
+      <div class="student-id">
+        ${escapeHtml(student.id)}
+      </div>
+
+      <div class="student-name">
+        ${escapeHtml(student.name)}
+      </div>
+
+      <div class="student-grade">
+        ${escapeHtml(student.grade)}
+      </div>
+
+      <div class="student-actions">
+
+        <button
+          class="edit-button"
+          data-id="${escapeHtml(student.id)}">
+
+          編集
+
+        </button>
+
+
+        <button
+          class="delete-button"
+          data-id="${escapeHtml(student.id)}">
+
+          削除
+
+        </button>
+
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+
+/* ==================================================
+   生徒追加ボタン
+================================================== */
+
+document
+  .getElementById(
+    "addStudentButton"
+  )
+  .addEventListener(
+    "click",
+    function() {
+
+      openStudentModal();
+
+    }
+  );
+
+
+/* ==================================================
+   生徒イベント
+================================================== */
+
+function attachStudentEvents() {
+
+
+  document
+    .querySelectorAll(
+      ".edit-button"
+    )
+    .forEach(
+      function(button) {
+
+        button.addEventListener(
+          "click",
+          function() {
+
+            const id =
+              button.dataset.id;
+
+
+            openStudentModal(id);
+
+          }
+        );
+
+      }
+    );
+
+
+  document
+    .querySelectorAll(
+      ".delete-button"
+    )
+    .forEach(
+      function(button) {
+
+        button.addEventListener(
+          "click",
+          async function() {
+
+            const id =
+              button.dataset.id;
+
+
+            const ok =
+              confirm(
+                id +
+                " を削除しますか？"
+              );
+
+
+            if (!ok) {
+              return;
+            }
+
+
+            button.disabled = true;
+
+
+            try {
+
+              const result =
+                await api({
+
+                  action:
+                    "deleteStudent",
+
+                  userId:
+                    currentUser.id,
+
+                  studentId:
+                    id
+
+                });
+
+
+              if (!result.success) {
+
+                alert(
+                  result.message
+                );
+
+                return;
+
+              }
+
+
+              await loadStudents();
+
+
+            } catch (error) {
+
+              console.error(error);
+
+              alert(
+                "削除に失敗しました。"
+              );
+
+            } finally {
+
+              button.disabled = false;
+
+            }
+
+          }
+        );
+
+      }
+    );
+
+}
+
+
+/* ==================================================
+   生徒モーダル
+================================================== */
+
+function openStudentModal(id = "") {
+
+  const modal =
+    document.getElementById(
+      "studentModal"
+    );
+
+
+  const title =
+    document.getElementById(
+      "studentModalTitle"
+    );
+
+
+  const idInput =
+    document.getElementById(
+      "studentId"
+    );
+
+
+  const nameInput =
+    document.getElementById(
+      "studentEditName"
+    );
+
+
+  const gradeInput =
+    document.getElementById(
+      "studentEditGrade"
+    );
+
+
+  const editingInput =
+    document.getElementById(
+      "editingStudentId"
+    );
+
+
+  if (!id) {
+
+    title.textContent =
+      "生徒を追加";
+
+
+    idInput.value =
+      "";
+
+    idInput.disabled =
+      false;
+
+
+    nameInput.value =
+      "";
+
+
+    gradeInput.value =
+      "";
+
+
+    editingInput.value =
+      "";
+
+
+  } else {
+
+    const rows =
+      document
+        .querySelectorAll(
+          ".student-row"
+        );
+
+
+    let target = null;
+
+
+    rows.forEach(
+      function(row) {
+
+        const edit =
+          row.querySelector(
+            ".edit-button"
+          );
+
+
+        if (
+          edit &&
+          edit.dataset.id === id
+        ) {
+
+          target = row;
+
+        }
+
+      }
+    );
+
+
+    if (!target) {
+      return;
+    }
+
+
+    const name =
+      target
+        .querySelector(
+          ".student-name"
+        )
+        .textContent
+        .trim();
+
+
+    const grade =
+      target
+        .querySelector(
+          ".student-grade"
+        )
+        .textContent
+        .trim();
+
+
+    title.textContent =
+      "生徒を編集";
+
+
+    idInput.value =
+      id;
+
+    idInput.disabled =
+      true;
+
+
+    nameInput.value =
+      name;
+
+
+    gradeInput.value =
+      grade;
+
+
+    editingInput.value =
+      id;
+
+  }
+
+
+  modal.classList
+    .remove("hidden");
+
+}
+
+
+/* ==================================================
+   モーダル閉じる
+================================================== */
+
+document
+  .getElementById(
+    "closeStudentModal"
+  )
+  .addEventListener(
+    "click",
+    closeStudentModal
+  );
+
+
+document
+  .querySelector(
+    ".modal-overlay"
+  )
+  .addEventListener(
+    "click",
+    closeStudentModal
+  );
+
+
+function closeStudentModal() {
+
+  document
+    .getElementById(
+      "studentModal"
+    )
+    .classList
+    .add("hidden");
+
+}
+
+
+/* ==================================================
+   生徒保存
+================================================== */
+
+document
+  .getElementById(
+    "studentForm"
+  )
+  .addEventListener(
+    "submit",
+    async function(e) {
+
+      e.preventDefault();
+
+
+      const editingId =
+        document
+          .getElementById(
+            "editingStudentId"
+          )
+          .value;
+
+
+      const studentId =
+        document
+          .getElementById(
+            "studentId"
+          )
+          .value
+          .trim();
+
+
+      const name =
+        document
+          .getElementById(
+            "studentEditName"
+          )
+          .value
+          .trim();
+
+
+      const grade =
+        document
+          .getElementById(
+            "studentEditGrade"
+          )
+          .value;
+
+
+      if (
+        !studentId ||
+        !name ||
+        !grade
+      ) {
+
+        alert(
+          "すべて入力してください。"
+        );
+
+        return;
+
+      }
+
+
+      try {
+
+        let result;
+
+
+        if (editingId) {
+
+          result =
+            await api({
+
+              action:
+                "updateStudent",
+
+              userId:
+                currentUser.id,
+
+              studentId:
+                editingId,
+
+              name:
+                name,
+
+              grade:
+                grade
+
+            });
+
+        } else {
+
+          result =
+            await api({
+
+              action:
+                "addStudent",
+
+              userId:
+                currentUser.id,
+
+              studentId:
+                studentId,
+
+              name:
+                name,
+
+              grade:
+                grade
+
+            });
+
+        }
+
+
+        if (!result.success) {
+
+          alert(
+            result.message
+          );
+
+          return;
+
+        }
+
+
+        closeStudentModal();
+
+        await loadStudents();
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        alert(
+          "保存に失敗しました。"
+        );
+
+      }
+
+    }
+  );
 
 
 /* ==================================================
@@ -2013,41 +2203,11 @@ async function changeStatus(
 
 function escapeHtml(value) {
 
-  if (
-    value === null ||
-    value === undefined
-  ) {
-
-    return "";
-
-  }
-
-
-  return String(value)
-
-    .replace(
-      /&/g,
-      "&amp;"
-    )
-
-    .replace(
-      /</g,
-      "&lt;"
-    )
-
-    .replace(
-      />/g,
-      "&gt;"
-    )
-
-    .replace(
-      /"/g,
-      "&quot;"
-    )
-
-    .replace(
-      /'/g,
-      "&#039;"
-    );
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 
 }
