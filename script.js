@@ -9,7 +9,7 @@
 ================================================== */
 
 const GAS_URL =
-  "ここにApps ScriptのウェブアプリURLを貼り付け";
+  "https://script.google.com/macros/s/AKfycbzdXE9K8JGJJCQ5cG1k7r4MxBPh6xIyDh4FFFYhzCi7PUS9euHPlSFkOnptJLrn8n83pw/exec";
 
 
 /* ==================================================
