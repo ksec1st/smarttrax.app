@@ -964,7 +964,7 @@ function renderStudentApplication(app) {
 
         <div>
           <div class="detail-label">
-            大会・イベント
+            イベント
           </div>
 
           <div class="detail-value">
