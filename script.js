@@ -1,7 +1,6 @@
 /* ==================================================
    交通費申請システム
-   写真・Google Drive保存なし
-   交通手段・利用区分・その他交通費なし
+   JavaScript
 ================================================== */
 
 
@@ -10,111 +9,515 @@
 ================================================== */
 
 const GAS_URL =
-  "https://script.google.com/macros/s/AKfycbzdXE9K8JGJJCQ5cG1k7r4MxBPh6xIyDh4FFFYhzCi7PUS9euHPlSFkOnptJLrn8n83pw/exec";
+  "ここにApps ScriptのウェブアプリURLを貼り付け";
 
 
 /* ==================================================
-   要素取得
+   現在ログイン中のユーザー
 ================================================== */
 
-const form =
-  document.getElementById("expenseForm");
+let currentUser = null;
 
-const transportCost =
-  document.getElementById("transportCost");
 
-const totalAmount =
-  document.getElementById("totalAmount");
+/* ==================================================
+   DOM
+================================================== */
 
-const submitButton =
-  document.getElementById("submitButton");
+const loginScreen =
+  document.getElementById("loginScreen");
+
+const studentScreen =
+  document.getElementById("studentScreen");
+
+const teacherScreen =
+  document.getElementById("teacherScreen");
 
 const successScreen =
   document.getElementById("successScreen");
 
-const applicationNumber =
-  document.getElementById("applicationNumber");
+const logoutButton =
+  document.getElementById("logoutButton");
 
-const newApplication =
-  document.getElementById("newApplication");
+
+/* ==================================================
+   ページ読み込み
+================================================== */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+
+    restoreLogin();
+
+    setupEvents();
+
+  }
+);
+
+
+/* ==================================================
+   イベント設定
+================================================== */
+
+function setupEvents() {
+
+
+  /* ------------------------------------------
+     ログイン
+  ------------------------------------------ */
+
+  document
+    .getElementById("loginForm")
+    .addEventListener(
+      "submit",
+      login
+    );
+
+
+  /* ------------------------------------------
+     ログアウト
+  ------------------------------------------ */
+
+  logoutButton
+    .addEventListener(
+      "click",
+      logout
+    );
+
+
+  /* ------------------------------------------
+     金額
+  ------------------------------------------ */
+
+  document
+    .getElementById("transportCost")
+    .addEventListener(
+      "input",
+      updateTotal
+    );
+
+
+  /* ------------------------------------------
+     申請
+  ------------------------------------------ */
+
+  document
+    .getElementById("expenseForm")
+    .addEventListener(
+      "submit",
+      submitApplication
+    );
+
+
+  /* ------------------------------------------
+     生徒更新
+  ------------------------------------------ */
+
+  document
+    .getElementById("refreshStudentButton")
+    .addEventListener(
+      "click",
+      loadMyApplications
+    );
+
+
+  /* ------------------------------------------
+     教員更新
+  ------------------------------------------ */
+
+  document
+    .getElementById("refreshTeacherButton")
+    .addEventListener(
+      "click",
+      loadAllApplications
+    );
+
+
+  /* ------------------------------------------
+     成功画面
+  ------------------------------------------ */
+
+  document
+    .getElementById("backToDashboard")
+    .addEventListener(
+      "click",
+      () => {
+
+        successScreen
+          .classList
+          .add("hidden");
+
+        studentScreen
+          .classList
+          .remove("hidden");
+
+        loadMyApplications();
+
+      }
+    );
+
+}
+
+
+/* ==================================================
+   ログイン
+================================================== */
+
+async function login(event) {
+
+  event.preventDefault();
+
+
+  const input =
+    document.getElementById("loginId");
+
+  const message =
+    document.getElementById("loginMessage");
+
+
+  const userId =
+    input.value.trim();
+
+
+  if (!userId) {
+
+    message.textContent =
+      "IDを入力してください。";
+
+    return;
+
+  }
+
+
+  message.textContent =
+    "ログインしています...";
+
+
+  try {
+
+    const result =
+      await apiRequest({
+
+        action: "login",
+
+        userId: userId
+
+      });
+
+
+    if (!result.success) {
+
+      throw new Error(
+        result.message
+      );
+
+    }
+
+
+    currentUser =
+      result.user;
+
+
+    localStorage.setItem(
+      "expenseUser",
+      JSON.stringify(
+        currentUser
+      )
+    );
+
+
+    showDashboard();
+
+
+  } catch (error) {
+
+    message.textContent =
+      error.message;
+
+  }
+
+}
+
+
+/* ==================================================
+   ログイン状態復元
+================================================== */
+
+function restoreLogin() {
+
+  const saved =
+    localStorage.getItem(
+      "expenseUser"
+    );
+
+
+  if (!saved) {
+    return;
+  }
+
+
+  try {
+
+    currentUser =
+      JSON.parse(saved);
+
+
+    if (
+      !currentUser ||
+      !currentUser.id
+    ) {
+
+      throw new Error();
+
+    }
+
+
+    showDashboard();
+
+
+  } catch {
+
+    localStorage.removeItem(
+      "expenseUser"
+    );
+
+  }
+
+}
+
+
+/* ==================================================
+   ダッシュボード表示
+================================================== */
+
+function showDashboard() {
+
+  loginScreen
+    .classList
+    .add("hidden");
+
+  logoutButton
+    .classList
+    .remove("hidden");
+
+
+  if (
+    currentUser.role === "教員"
+  ) {
+
+    studentScreen
+      .classList
+      .add("hidden");
+
+    teacherScreen
+      .classList
+      .remove("hidden");
+
+    document
+      .getElementById("studentName")
+      .textContent =
+      currentUser.name || "";
+
+    loadAllApplications();
+
+  } else {
+
+    teacherScreen
+      .classList
+      .add("hidden");
+
+    studentScreen
+      .classList
+      .remove("hidden");
+
+
+    document
+      .getElementById("studentName")
+      .textContent =
+      currentUser.name || "";
+
+
+    /* ------------------------------------------
+       自動入力
+    ------------------------------------------ */
+
+    const name =
+      document.getElementById("name");
+
+    const grade =
+      document.getElementById("grade");
+
+
+    name.value =
+      currentUser.name || "";
+
+
+    grade.value =
+      currentUser.grade || "";
+
+
+    loadMyApplications();
+
+  }
+
+}
+
+
+/* ==================================================
+   ログアウト
+================================================== */
+
+function logout() {
+
+  currentUser = null;
+
+
+  localStorage.removeItem(
+    "expenseUser"
+  );
+
+
+  studentScreen
+    .classList
+    .add("hidden");
+
+  teacherScreen
+    .classList
+    .add("hidden");
+
+  successScreen
+    .classList
+    .add("hidden");
+
+  logoutButton
+    .classList
+    .add("hidden");
+
+  loginScreen
+    .classList
+    .remove("hidden");
+
+
+  document
+    .getElementById("loginId")
+    .value = "";
+
+}
+
+
+/* ==================================================
+   API
+================================================== */
+
+async function apiRequest(data) {
+
+  const response =
+    await fetch(
+      GAS_URL,
+      {
+
+        method: "POST",
+
+        headers: {
+
+          "Content-Type":
+            "text/plain;charset=utf-8"
+
+        },
+
+        body:
+          JSON.stringify(data)
+
+      }
+    );
+
+
+  const result =
+    await response.json();
+
+
+  return result;
+
+}
 
 
 /* ==================================================
    合計金額
 ================================================== */
 
-function calculateTotal() {
+function updateTotal() {
 
-  const total =
-    Number(transportCost.value) || 0;
+  const value =
+    Number(
+      document
+        .getElementById("transportCost")
+        .value
+    ) || 0;
 
-  totalAmount.textContent =
-    total.toLocaleString("ja-JP");
+
+  document
+    .getElementById("totalAmount")
+    .textContent =
+    value.toLocaleString();
+
 }
 
 
 /* ==================================================
-   金額入力時
+   交通費申請
 ================================================== */
 
-transportCost.addEventListener(
-  "input",
-  calculateTotal
-);
+async function submitApplication(event) {
+
+  event.preventDefault();
 
 
-/* ==================================================
-   フォーム送信
-================================================== */
+  if (!currentUser) {
 
-form.addEventListener(
-  "submit",
-  async function(event) {
+    alert(
+      "ログインしてください。"
+    );
 
-    event.preventDefault();
+    return;
 
-
-    /* ----------------------------------------------
-       GAS URLチェック
-    ---------------------------------------------- */
-
-    if (
-      !GAS_URL ||
-      GAS_URL.includes(
-        "ここにApps Script"
-      )
-    ) {
-
-      alert(
-        "Apps ScriptのURLが設定されていません。"
-      );
-
-      return;
-    }
+  }
 
 
-    /* ----------------------------------------------
-       送信ボタン無効化
-    ---------------------------------------------- */
-
-    submitButton.disabled = true;
-
-    submitButton.querySelector(
-      "span"
-    ).textContent = "送信中...";
+  const button =
+    document.getElementById(
+      "submitButton"
+    );
 
 
-    /* ----------------------------------------------
-       入力データ取得
-    ---------------------------------------------- */
+  button.disabled = true;
+
+  button.textContent =
+    "申請中...";
+
+
+  try {
+
+    const transportCost =
+      Number(
+        document
+          .getElementById(
+            "transportCost"
+          )
+          .value
+      ) || 0;
+
 
     const data = {
+
+      action: "submit",
+
+      userId:
+        currentUser.id,
 
       name:
         document
           .getElementById("name")
-          .value
-          .trim(),
+          .value,
 
       grade:
         document
@@ -124,8 +527,7 @@ form.addEventListener(
       className:
         document
           .getElementById("className")
-          .value
-          .trim(),
+          .value,
 
       tripDate:
         document
@@ -135,173 +537,706 @@ form.addEventListener(
       destination:
         document
           .getElementById("destination")
-          .value
-          .trim(),
+          .value,
 
       eventName:
         document
           .getElementById("eventName")
-          .value
-          .trim(),
+          .value,
 
       departure:
         document
           .getElementById("departure")
-          .value
-          .trim(),
+          .value,
 
       arrival:
         document
           .getElementById("arrival")
-          .value
-          .trim(),
+          .value,
 
       transportCost:
-        Number(
-          transportCost.value
-        ) || 0,
+        transportCost,
 
       totalAmount:
-        Number(
-          transportCost.value
-        ) || 0,
+        transportCost,
 
       note:
         document
           .getElementById("note")
           .value
-          .trim()
 
     };
 
 
-    /* ----------------------------------------------
-       Google Apps Scriptへ送信
-    ---------------------------------------------- */
-
-    try {
-
-      const response =
-        await fetch(
-          GAS_URL,
-          {
-            method: "POST",
-
-            headers: {
-              "Content-Type":
-                "text/plain;charset=utf-8"
-            },
-
-            body:
-              JSON.stringify(data)
-          }
-        );
+    const result =
+      await apiRequest(data);
 
 
-      /* --------------------------------------------
-         JSON取得
-      -------------------------------------------- */
+    if (!result.success) {
 
-      const result =
-        await response.json();
-
-
-      /* --------------------------------------------
-         成功
-      -------------------------------------------- */
-
-      if (result.success) {
-
-        applicationNumber.textContent =
-          result.applicationNumber;
-
-        form.style.display =
-          "none";
-
-        successScreen.style.display =
-          "block";
-
-        window.scrollTo({
-          top: 0,
-          behavior: "smooth"
-        });
-
-      }
-
-
-      /* --------------------------------------------
-         エラー
-      -------------------------------------------- */
-
-      else {
-
-        alert(
-          result.message ||
-          "申請の送信に失敗しました。"
-        );
-
-      }
-
-    }
-
-
-    catch (error) {
-
-      console.error(error);
-
-      alert(
-        "通信エラーが発生しました。\n\n" +
-        "時間をおいてもう一度お試しください。"
+      throw new Error(
+        result.message
       );
 
     }
 
 
-    finally {
+    /* ------------------------------------------
+       成功画面
+    ------------------------------------------ */
 
-      submitButton.disabled =
-        false;
+    document
+      .getElementById(
+        "applicationNumber"
+      )
+      .textContent =
+      result.applicationNumber;
 
-      submitButton.querySelector(
-        "span"
-      ).textContent =
-        "交通費を申請する";
+
+    studentScreen
+      .classList
+      .add("hidden");
+
+
+    successScreen
+      .classList
+      .remove("hidden");
+
+
+    document
+      .getElementById(
+        "expenseForm"
+      )
+      .reset();
+
+
+    updateTotal();
+
+
+  } catch (error) {
+
+    alert(
+      error.message
+    );
+
+  } finally {
+
+    button.disabled = false;
+
+    button.textContent =
+      "交通費を申請する";
+
+  }
+
+}
+
+
+/* ==================================================
+   生徒：自分の申請
+================================================== */
+
+async function loadMyApplications() {
+
+  if (!currentUser) {
+    return;
+  }
+
+
+  const container =
+    document.getElementById(
+      "studentApplications"
+    );
+
+
+  container.innerHTML =
+    `<div class="loading">
+      読み込み中...
+    </div>`;
+
+
+  try {
+
+    const result =
+      await apiRequest({
+
+        action:
+          "getMyApplications",
+
+        userId:
+          currentUser.id
+
+      });
+
+
+    if (!result.success) {
+
+      throw new Error(
+        result.message
+      );
 
     }
 
+
+    renderStudentApplications(
+      result.applications
+    );
+
+
+  } catch (error) {
+
+    container.innerHTML =
+      `<div class="empty">
+        ${escapeHtml(
+          error.message
+        )}
+      </div>`;
+
   }
-);
+
+}
 
 
 /* ==================================================
-   新しい申請
+   生徒：申請表示
 ================================================== */
 
-newApplication.addEventListener(
-  "click",
-  function() {
+function renderStudentApplications(
+  applications
+) {
 
-    form.reset();
+  const container =
+    document.getElementById(
+      "studentApplications"
+    );
 
-    calculateTotal();
 
-    successScreen.style.display =
-      "none";
+  if (
+    !applications ||
+    applications.length === 0
+  ) {
 
-    form.style.display =
-      "block";
+    container.innerHTML =
+      `<div class="empty">
+        まだ申請はありません。
+      </div>`;
 
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
+    return;
 
   }
-);
+
+
+  container.innerHTML =
+    applications
+      .slice()
+      .reverse()
+      .map(
+        application =>
+          createStudentApplicationCard(
+            application
+          )
+      )
+      .join("");
+
+}
 
 
 /* ==================================================
-   初期表示
+   生徒：申請カード
 ================================================== */
 
-calculateTotal();
+function createStudentApplicationCard(
+  application
+) {
+
+  const status =
+    application.status || "未確認";
+
+
+  return `
+
+    <div class="application-card">
+
+      <div class="application-top">
+
+        <div>
+
+          <div class="application-number">
+
+            ${escapeHtml(
+              application.applicationNumber
+            )}
+
+          </div>
+
+          <small>
+
+            申請日時：
+            ${escapeHtml(
+              application.timestamp
+            )}
+
+          </small>
+
+        </div>
+
+        <span class="status status-${escapeHtml(status)}">
+
+          ${escapeHtml(status)}
+
+        </span>
+
+      </div>
+
+
+      <div class="application-info">
+
+        <div class="info-item">
+          <span>遠征日：</span>
+          ${escapeHtml(
+            application.tripDate
+          )}
+        </div>
+
+        <div class="info-item">
+          <span>遠征先：</span>
+          ${escapeHtml(
+            application.destination
+          )}
+        </div>
+
+        <div class="info-item">
+          <span>大会：</span>
+          ${escapeHtml(
+            application.eventName
+          )}
+        </div>
+
+        <div class="info-item">
+          <span>出発地：</span>
+          ${escapeHtml(
+            application.departure
+          )}
+        </div>
+
+        <div class="info-item">
+          <span>到着地：</span>
+          ${escapeHtml(
+            application.arrival
+          )}
+        </div>
+
+        <div class="info-item">
+          <span>合計：</span>
+          ¥${Number(
+            application.totalAmount || 0
+          ).toLocaleString()}
+
+        </div>
+
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+
+/* ==================================================
+   教員：全申請
+================================================== */
+
+async function loadAllApplications() {
+
+  if (!currentUser) {
+    return;
+  }
+
+
+  const container =
+    document.getElementById(
+      "teacherApplications"
+    );
+
+
+  container.innerHTML =
+    `<div class="loading">
+      読み込み中...
+    </div>`;
+
+
+  try {
+
+    const result =
+      await apiRequest({
+
+        action:
+          "getAllApplications",
+
+        userId:
+          currentUser.id
+
+      });
+
+
+    if (!result.success) {
+
+      throw new Error(
+        result.message
+      );
+
+    }
+
+
+    renderTeacherApplications(
+      result.applications
+    );
+
+
+  } catch (error) {
+
+    container.innerHTML =
+      `<div class="empty">
+        ${escapeHtml(
+          error.message
+        )}
+      </div>`;
+
+  }
+
+}
+
+
+/* ==================================================
+   教員：申請一覧表示
+================================================== */
+
+function renderTeacherApplications(
+  applications
+) {
+
+  const container =
+    document.getElementById(
+      "teacherApplications"
+    );
+
+
+  if (
+    !applications ||
+    applications.length === 0
+  ) {
+
+    container.innerHTML =
+      `<div class="empty">
+        現在、申請はありません。
+      </div>`;
+
+    return;
+
+  }
+
+
+  container.innerHTML =
+    applications
+      .slice()
+      .reverse()
+      .map(
+        application =>
+          createTeacherApplicationCard(
+            application
+          )
+      )
+      .join("");
+
+}
+
+
+/* ==================================================
+   教員：申請カード
+================================================== */
+
+function createTeacherApplicationCard(
+  application
+) {
+
+  const status =
+    application.status || "未確認";
+
+
+  const statuses = [
+
+    "未確認",
+    "確認中",
+    "承認",
+    "差し戻し",
+    "支払済"
+
+  ];
+
+
+  const options =
+    statuses
+      .map(
+        item => `
+
+          <option
+            value="${escapeHtml(item)}"
+            ${
+              item === status
+                ? "selected"
+                : ""
+            }
+          >
+            ${escapeHtml(item)}
+          </option>
+
+        `
+      )
+      .join("");
+
+
+  return `
+
+    <div class="application-card">
+
+      <div class="application-top">
+
+        <div>
+
+          <div class="application-number">
+
+            ${escapeHtml(
+              application.applicationNumber
+            )}
+
+          </div>
+
+          <small>
+
+            ${escapeHtml(
+              application.timestamp
+            )}
+
+          </small>
+
+        </div>
+
+
+        <div class="teacher-status">
+
+          <select
+            onchange="
+              changeStatus(
+                '${escapeHtml(
+                  application.applicationNumber
+                )}',
+                this.value
+              )
+            "
+          >
+
+            ${options}
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <div class="application-info">
+
+        <div class="info-item">
+          <span>氏名：</span>
+          ${escapeHtml(
+            application.name
+          )}
+        </div>
+
+        <div class="info-item">
+          <span>学年：</span>
+          ${escapeHtml(
+            application.grade
+          )}
+        </div>
+
+        <div class="info-item">
+          <span>クラス：</span>
+          ${escapeHtml(
+            application.className
+          )}
+        </div>
+
+        <div class="info-item">
+          <span>申請者ID：</span>
+          ${escapeHtml(
+            application.userId
+          )}
+        </div>
+
+        <div class="info-item">
+          <span>遠征日：</span>
+          ${escapeHtml(
+            application.tripDate
+          )}
+        </div>
+
+        <div class="info-item">
+          <span>遠征先：</span>
+          ${escapeHtml(
+            application.destination
+          )}
+        </div>
+
+        <div class="info-item">
+          <span>大会：</span>
+          ${escapeHtml(
+            application.eventName
+          )}
+        </div>
+
+        <div class="info-item">
+          <span>出発地：</span>
+          ${escapeHtml(
+            application.departure
+          )}
+        </div>
+
+        <div class="info-item">
+          <span>到着地：</span>
+          ${escapeHtml(
+            application.arrival
+          )}
+        </div>
+
+        <div class="info-item">
+          <span>交通費：</span>
+          ¥${Number(
+            application.transportCost || 0
+          ).toLocaleString()}
+        </div>
+
+        <div class="info-item">
+          <span>合計金額：</span>
+          ¥${Number(
+            application.totalAmount || 0
+          ).toLocaleString()}
+        </div>
+
+        <div class="info-item">
+          <span>備考：</span>
+          ${escapeHtml(
+            application.note || "なし"
+          )}
+        </div>
+
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+
+/* ==================================================
+   教員：ステータス変更
+================================================== */
+
+async function changeStatus(
+  applicationNumber,
+  status
+) {
+
+  if (!currentUser) {
+    return;
+  }
+
+
+  if (
+    currentUser.role !== "教員"
+  ) {
+
+    alert(
+      "教員権限が必要です。"
+    );
+
+    return;
+
+  }
+
+
+  try {
+
+    const result =
+      await apiRequest({
+
+        action:
+          "updateStatus",
+
+        userId:
+          currentUser.id,
+
+        applicationNumber:
+          applicationNumber,
+
+        status:
+          status
+
+      });
+
+
+    if (!result.success) {
+
+      throw new Error(
+        result.message
+      );
+
+    }
+
+
+    await loadAllApplications();
+
+
+  } catch (error) {
+
+    alert(
+      error.message
+    );
+
+    await loadAllApplications();
+
+  }
+
+}
+
+
+/* ==================================================
+   HTMLエスケープ
+================================================== */
+
+function escapeHtml(value) {
+
+  if (
+    value === null ||
+    value === undefined
+  ) {
+
+    return "";
+
+  }
+
+
+  return String(value)
+
+    .replaceAll("&", "&amp;")
+
+    .replaceAll("<", "&lt;")
+
+    .replaceAll(">", "&gt;")
+
+    .replaceAll('"', "&quot;")
+
+    .replaceAll("'", "&#039;");
+
+}
