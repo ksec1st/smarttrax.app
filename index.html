@@ -13,6 +13,7 @@
 
 <header class="header">
   <div class="header-inner">
+
     <div class="header-logo">
       <span>ESPORTS CLUB</span>
       <h1>交通費申請</h1>
@@ -21,40 +22,62 @@
     <div class="header-label">
       TRANSPORTATION EXPENSE
     </div>
+
   </div>
 </header>
 
 
 <main class="container">
 
+  <!-- =========================
+       Intro
+  ========================== -->
+
   <section class="intro">
-    <p class="eyebrow">TRANSPORTATION EXPENSE</p>
-    <h2>交通費申請フォーム</h2>
+
+    <p class="eyebrow">
+      TRANSPORTATION EXPENSE
+    </p>
+
+    <h2>
+      交通費申請フォーム
+    </h2>
+
     <p>
       遠征・大会・イベントなどで発生した交通費を申請してください。
     </p>
+
   </section>
 
 
   <form id="expenseForm">
 
     <!-- =========================
-         申請者情報
+         01 申請者情報
     ========================== -->
 
     <section class="card">
 
       <div class="card-title">
-        <span class="number">01</span>
+
+        <span class="number">
+          01
+        </span>
+
         <div>
           <p>APPLICANT</p>
           <h3>申請者情報</h3>
         </div>
+
       </div>
+
 
       <div class="form-grid">
 
+        <!-- 氏名 -->
+
         <div class="form-group">
+
           <label for="name">
             氏名
             <span class="required">必須</span>
@@ -66,25 +89,46 @@
             placeholder="例：山田 太郎"
             required
           >
+
         </div>
 
 
+        <!-- 学年 -->
+
         <div class="form-group">
+
           <label for="grade">
             学年
             <span class="required">必須</span>
           </label>
 
           <select id="grade" required>
-            <option value="">選択してください</option>
-            <option value="1年">1年</option>
-            <option value="2年">2年</option>
-            <option value="3年">3年</option>
+
+            <option value="">
+              選択してください
+            </option>
+
+            <option value="1年">
+              1年
+            </option>
+
+            <option value="2年">
+              2年
+            </option>
+
+            <option value="3年">
+              3年
+            </option>
+
           </select>
+
         </div>
 
 
+        <!-- クラス -->
+
         <div class="form-group">
+
           <label for="className">
             クラス
             <span class="required">必須</span>
@@ -96,6 +140,7 @@
             placeholder="例：1組"
             required
           >
+
         </div>
 
       </div>
@@ -104,24 +149,31 @@
 
 
     <!-- =========================
-         遠征情報
+         02 遠征情報
     ========================== -->
 
     <section class="card">
 
       <div class="card-title">
-        <span class="number">02</span>
+
+        <span class="number">
+          02
+        </span>
 
         <div>
           <p>TRIP INFORMATION</p>
           <h3>遠征情報</h3>
         </div>
+
       </div>
 
 
       <div class="form-grid">
 
+        <!-- 遠征日 -->
+
         <div class="form-group">
+
           <label for="tripDate">
             遠征日
             <span class="required">必須</span>
@@ -132,10 +184,14 @@
             id="tripDate"
             required
           >
+
         </div>
 
 
+        <!-- 遠征先 -->
+
         <div class="form-group">
+
           <label for="destination">
             遠征先
             <span class="required">必須</span>
@@ -147,10 +203,14 @@
             placeholder="例：大阪府"
             required
           >
+
         </div>
 
 
+        <!-- 大会・イベント -->
+
         <div class="form-group full">
+
           <label for="eventName">
             大会・イベント名
             <span class="required">必須</span>
@@ -162,6 +222,7 @@
             placeholder="例：○○ esports CUP"
             required
           >
+
         </div>
 
       </div>
@@ -170,24 +231,31 @@
 
 
     <!-- =========================
-         交通情報
+         03 交通費
     ========================== -->
 
     <section class="card">
 
       <div class="card-title">
-        <span class="number">03</span>
+
+        <span class="number">
+          03
+        </span>
 
         <div>
-          <p>TRANSPORTATION</p>
-          <h3>交通情報</h3>
+          <p>TRANSPORTATION EXPENSE</p>
+          <h3>交通費</h3>
         </div>
+
       </div>
 
 
       <div class="form-grid">
 
+        <!-- 出発地 -->
+
         <div class="form-group">
+
           <label for="departure">
             出発地
             <span class="required">必須</span>
@@ -199,10 +267,14 @@
             placeholder="例：京都駅"
             required
           >
+
         </div>
 
 
+        <!-- 到着地 -->
+
         <div class="form-group">
+
           <label for="arrival">
             到着地
             <span class="required">必須</span>
@@ -214,47 +286,21 @@
             placeholder="例：大阪駅"
             required
           >
+
         </div>
 
 
-        <div class="form-group">
-          <label for="transport">
-            交通手段
-            <span class="required">必須</span>
-          </label>
+        <!-- 交通費 -->
 
-          <select id="transport" required>
-            <option value="">選択してください</option>
-            <option value="電車">電車</option>
-            <option value="バス">バス</option>
-            <option value="新幹線">新幹線</option>
-            <option value="タクシー">タクシー</option>
-            <option value="その他">その他</option>
-          </select>
-        </div>
+        <div class="form-group full">
 
-
-        <div class="form-group">
-          <label for="roundTrip">
-            利用区分
-            <span class="required">必須</span>
-          </label>
-
-          <select id="roundTrip" required>
-            <option value="">選択してください</option>
-            <option value="往復">往復</option>
-            <option value="片道">片道</option>
-          </select>
-        </div>
-
-
-        <div class="form-group">
           <label for="transportCost">
             交通費
             <span class="required">必須</span>
           </label>
 
           <div class="money-input">
+
             <input
               type="number"
               id="transportCost"
@@ -262,43 +308,43 @@
               placeholder="0"
               required
             >
+
             <span>円</span>
+
           </div>
-        </div>
 
-
-        <div class="form-group">
-          <label for="otherCost">
-            その他交通費
-          </label>
-
-          <div class="money-input">
-            <input
-              type="number"
-              id="otherCost"
-              min="0"
-              value="0"
-              placeholder="0"
-            >
-            <span>円</span>
-          </div>
         </div>
 
       </div>
 
 
-      <!-- 合計金額 -->
+      <!-- =========================
+           合計金額
+      ========================== -->
 
       <div class="total-box">
 
         <div>
+
           <p>APPLICATION TOTAL</p>
-          <span>申請合計額</span>
+
+          <span>
+            申請合計額
+          </span>
+
         </div>
 
+
         <div class="total-price">
-          <strong id="totalAmount">0</strong>
-          <span>円</span>
+
+          <strong id="totalAmount">
+            0
+          </strong>
+
+          <span>
+            円
+          </span>
+
         </div>
 
       </div>
@@ -307,18 +353,22 @@
 
 
     <!-- =========================
-         備考
+         04 備考
     ========================== -->
 
     <section class="card">
 
       <div class="card-title">
-        <span class="number">04</span>
+
+        <span class="number">
+          04
+        </span>
 
         <div>
           <p>NOTE</p>
           <h3>備考</h3>
         </div>
+
       </div>
 
 
@@ -371,9 +421,17 @@
       class="submit-button"
       id="submitButton"
     >
-      <span>交通費を申請する</span>
-      <span class="arrow">→</span>
+
+      <span>
+        交通費を申請する
+      </span>
+
+      <span class="arrow">
+        →
+      </span>
+
     </button>
+
 
     <p class="form-note">
       ※ 送信後、申請内容がGoogleスプレッドシートへ登録されます。
@@ -396,23 +454,31 @@
       ✓
     </div>
 
-    <p class="eyebrow">APPLICATION COMPLETE</p>
+    <p class="eyebrow">
+      APPLICATION COMPLETE
+    </p>
 
-    <h2>申請が完了しました</h2>
+    <h2>
+      申請が完了しました
+    </h2>
 
     <p>
       交通費申請を受け付けました。
     </p>
 
+
     <div class="application-number-box">
 
-      <span>APPLICATION NUMBER</span>
+      <span>
+        APPLICATION NUMBER
+      </span>
 
       <strong id="applicationNumber">
         -
       </strong>
 
     </div>
+
 
     <button
       type="button"
@@ -428,8 +494,15 @@
 
 
 <footer class="footer">
-  <p>ESPORTS CLUB</p>
-  <span>TRANSPORTATION EXPENSE SYSTEM</span>
+
+  <p>
+    ESPORTS CLUB
+  </p>
+
+  <span>
+    TRANSPORTATION EXPENSE SYSTEM
+  </span>
+
 </footer>
 
 
